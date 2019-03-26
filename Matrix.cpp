@@ -314,12 +314,83 @@ Matrix Matrix::operator*(const Matrix & _matrix)
 	}
 	//return *this ;
 }
+Matrix Matrix::operator*(const double & _Scalar)
+{
+	for (int i = 0; i < row; i++)
+	{
+		for (int j = 0; j < column; j++)
+		{
+			matrix[i][j] *= _Scalar;
+		}
+	}
+	return *this;
+}
+Matrix Matrix::operator/(const double & _Scalar)
+{
+	try
+	{
+		if (_Scalar==0)
+			throw "分母不能為0";
+		for (int i = 0; i <row; i++)
+		{
+			for (int J= 0; J < column; J++)
+			{
+				matrix[i][J] /= _Scalar;
+			}
+		}
+		return *this;
+
+	}
+	catch (const char* str) {
+		cerr << "錯誤: " << str << endl;
+	}
+}
 Matrix Matrix::operator=(const Matrix & _matrix)
 {
 	row = _matrix.row;
 	column = _matrix.column;
 	matrix = _matrix.matrix;
 	return *this;
+}
+Matrix Matrix::operator^(const double & _Scalar)
+{
+	try
+	{
+		if (column!=row)
+			throw "matrix非方陣";
+		if (_Scalar == 1)
+		{
+			Matrix ans(row, column);
+			for (int i = 0; i < row; i++)
+			{
+				for (int j = 0; j < column; j++) {
+					if (j == i)ans.matrix[i][j] = 1;
+					else matrix[i][j] = 0;
+				}
+			}
+			return ans;
+		}
+		else {
+			Matrix ans(row, column);
+			Matrix tem = *this;
+			for (int i = 0; i < row; i++)
+			{
+				for (int j = 0; j < column; j++) {
+					if (j == i)ans.matrix[i][j] = 1;
+					else matrix[i][j] = 0;
+				}
+			}
+			for (int i = 0; i < _Scalar; i++)
+			{
+				ans=ans*tem;
+			}
+			return ans;
+		}
+
+	}
+	catch (const char* str) {
+		cerr << "錯誤: " << str << endl;
+	}
 }
 Matrix Matrix::Transpose()
 {
@@ -480,19 +551,26 @@ Matrix Matrix::Inverse()
 		Matrix ans;
 		ans = this->adjoint();
 		double denomainater = this->determinants();
-		for (int i = 0; i < row; i++)
-		{
-			for (int j = 0; j < column; j++)
+		if (denomainater == 0) return ans;
+		else {
+			for (int i = 0; i < row; i++)
 			{
-				ans.matrix[i][j] /= denomainater;
+				for (int j = 0; j < column; j++)
+				{
+					ans.matrix[i][j] /= denomainater;
+				}
 			}
+			return ans;
 		}
-		return ans;
 	}
 	catch (const char* str) {
 		cerr << "錯誤: " << str << endl;
 	}
 	//return *this ;
+}
+double Matrix::Rank()
+{
+	//
 }
 ostream & operator<<(ostream & os, const Matrix &A)
 {

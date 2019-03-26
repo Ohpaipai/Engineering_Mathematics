@@ -27,13 +27,16 @@ public:
 	Matrix operator +(const Matrix&_matrix);
 	Matrix operator -(const Matrix&_matrix);
 	Matrix operator *(const Matrix&_matrix);
+	Matrix operator *(const double&_Scalar);
+	Matrix operator /(const double&_Scalar);
 	Matrix operator =(const Matrix&_matrix);
+	Matrix operator ^(const double&_Scalar);
 	Matrix Transpose();
 	double determinants();
 	Matrix adjoint();
 	Matrix Inverse();
+	double Rank();
 
-	//rank
 	//linear system
 	//eigenvaule
 	//power method of eigen value
