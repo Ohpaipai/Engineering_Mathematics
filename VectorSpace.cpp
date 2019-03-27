@@ -49,6 +49,16 @@ VectorSpace::VectorSpace(string _name, int _size)
 	Vectorsize = _size;
 }
 
+VectorSpace::VectorSpace(int _size)
+{
+	Vectorsize = _size;
+	vec.resize(_size);
+	for (int i = 0; i < _size; i++)
+	{
+		vec[i] = 0;
+	}
+}
+
 void VectorSpace::addNumInSpace(double _num)
 {
 	vec.push_back(_num);
@@ -331,6 +341,56 @@ bool VectorSpace::Orthohonal(VectorSpace & _vec)
 		cerr << "¿ù»~: " << str << endl;
 	}
 	return false;
+}
+
+vector<VectorSpace> Orthonormalbasis(vector<VectorSpace> _vec)
+{
+	bool wrong = false;
+	for (int i = 1; i <_vec.size(); i++)
+	{
+		if (_vec[i - 1].getvectorsize() != _vec[i].getvectorsize())
+		{
+			wrong = true;
+			break;
+		}
+	}
+	try
+	{
+		if (wrong)
+			throw "size¤£¤@¼Ë";
+		vector<VectorSpace>ans;
+		ans.push_back(_vec[0]);
+		//cout << ans[0] << endl;
+		for (int i = 1; i <_vec.size(); i++)
+		{
+			VectorSpace tem(_vec[i].getvectorsize());
+			for (int j = 0; j < ans.size(); j++)
+			{
+				//cout <<j<<" " <<ans[j];
+				double up = (_vec[i] * ans[j]);
+				double down = (ans[j] * ans[j]);
+				double mult = up / down;
+				VectorSpace t(_vec[i].getvectorsize());
+				for (int k= 0; k < t.getvectorsize(); k++)
+				{
+					t.changeNumInSpace(k, ans[j].getNumInSpace(k) * mult);
+				}
+				tem=tem+ t ;
+				
+			}
+			ans.push_back(_vec[i] - tem);
+		}
+		for (int i = 0; i < ans.size(); i++)
+		{
+			//cout << ans[i];
+			ans[i] = ans[i].Normalization();
+		}
+		return ans;
+	}
+	catch (const char* str) {
+		cerr << "¿ù»~: " << str << endl;
+	}
+	return vector<VectorSpace>();
 }
 
 

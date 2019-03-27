@@ -211,6 +211,10 @@ void Matrix::replaceNuminMatrix(int row, int column, double _num)
 {
 	matrix[row][column] = _num;
 }
+double Matrix::getnuminMatrix(int _row, int _column)
+{
+	return matrix[_row][_column];
+}
 void Matrix::deleterow(int _row)
 {
 	vector <vector<double>>tem;
@@ -465,7 +469,7 @@ double Matrix::determinants()
 				//cout << tem << endl;
 				//cout<<"next"<<endl;
 			}
-
+			//cout << tem << endl;
 			double ans = 1;
 
 			for (i = 0; i < this->column; i++)
@@ -570,7 +574,71 @@ Matrix Matrix::Inverse()
 }
 double Matrix::Rank()
 {
-	//
+
+	Matrix tem(*this);
+	int nowColumn = 0;
+	double mult = 0;
+	for (int _row = 0; _row < tem.row; _row++)
+	{
+		//cout << _row << "   " << endl << tem;
+		if (tem.matrix[_row][nowColumn] != 0)
+		{
+			for (int _column =nowColumn; _column < tem.row; _column++)
+			{
+				if (_column != _row) {
+					mult = tem.matrix[_column][_row] / tem.matrix[_row][nowColumn];
+					
+					for (int i = nowColumn; i < tem.column; i++)
+					{
+						tem.matrix[_column][i] -= mult *tem.matrix[_row][i];
+						
+					}
+					//cout << mult << "  " << endl << tem;
+				}
+			}
+			nowColumn++;
+		}
+		else
+		{
+			if (_row == tem.row - 1) break;
+			bool allzero = true;
+			for (int _column = _row+1; _column < tem.row; _column++)
+			{
+				if (tem.matrix[_column][row] != 0) { //row->nowcolumn?
+					vector<double>change = tem.matrix[_column];
+					tem.matrix[_column] = tem.matrix[_row];
+					tem.matrix[_row] = change;
+					allzero = false;
+					break;
+				}
+			}
+			if (allzero) {
+				_row--;
+			}
+		}
+	}
+
+	//cout << tem << endl;
+
+	int rank = min(tem.column,tem.row);
+	for (int i = 0; i < tem.row; i++)
+	{
+		bool allzero = true;
+		for (int j = 0; j < tem.column; j++)
+		{
+			if (tem.matrix[i][j] != 0) {
+				allzero = false;
+				break;
+			}
+		}
+		if (allzero)
+		{
+			rank--;
+		}
+	}
+
+	return rank;
+
 }
 ostream & operator<<(ostream & os, const Matrix &A)
 {

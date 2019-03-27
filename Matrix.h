@@ -19,6 +19,7 @@ public:
 	void addColumn(vector<double> _tem, int _size);
 	void addColumn(VectorSpace _tem, int _size);
 	void replaceNuminMatrix(int row, int column, double _num);
+	double getnuminMatrix(int _row, int _column);
 	void deleterow(int _row);
 	void deletecolumn(int _column);
 	int getcolumn();

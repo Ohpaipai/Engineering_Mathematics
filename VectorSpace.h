@@ -18,6 +18,7 @@ public:
 	VectorSpace(string _name, int _size, vector<double>_vec);
 	VectorSpace(string _name);
 	VectorSpace(string _name,int _size);
+	VectorSpace(int _size);
 	void addNumInSpace(double _num);
 	void changeNumInSpace(double _num, int place);
 	VectorSpace(const VectorSpace& _vec);
@@ -41,7 +42,7 @@ public:
 	VectorSpace Projection(VectorSpace& _vec);
 	bool Parallel(VectorSpace &_vec);
 	bool Orthohonal(VectorSpace&_vec);
-
+	
 	//Linear_independent judgement
 	//Orthonormal basis
 private:
@@ -50,3 +51,4 @@ private:
 	int Vectorsize;
 };
 
+vector<VectorSpace> Orthonormalbasis(vector<VectorSpace> _vec);
