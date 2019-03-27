@@ -173,20 +173,35 @@ double VectorSpace::operator*(const VectorSpace & _vec)
 
 VectorSpace VectorSpace::operator/(const double & _Scalar)
 {
-	for (int i = 0; i < Vectorsize; i++)
+
+	try
 	{
-		vec[i] /= _Scalar;
+		if (_Scalar==0)
+			throw "分母為0";
+		VectorSpace ans(*this);
+		
+		for (int i = 0; i < Vectorsize; i++)
+		{
+			vec[i] /= _Scalar;
+		}
+		return ans;
 	}
-	return *this;
+	catch (const char* str) {
+		cerr << "錯誤: " << str << endl;
+	}
+	return VectorSpace();
+
 }
 
 VectorSpace VectorSpace::operator*(const double & _Scalar)
 {
+	VectorSpace ans(*this);
 	for (int i = 0; i < Vectorsize; i++)
 	{
-		vec[i] *= _Scalar;
+		ans.vec[i] *= _Scalar;
+		
 	}
-	return *this;
+	return ans;
 }
 
 VectorSpace VectorSpace::operator^(const VectorSpace & _vec)
@@ -309,16 +324,21 @@ bool VectorSpace::Parallel(VectorSpace & _vec)
 	{
 		if (Vectorsize != _vec.Vectorsize)
 			throw "size不一樣";
-		bool ans = true;
-		for (int i = 1; i < Vectorsize; i++)
+		
+	/*	for (int i = 1; i < Vectorsize; i++)
 		{
 			if (vec[i - 1] / _vec.vec[i - 1] != vec[i] / _vec.vec[i])
 			{
 				ans = false;
 				break;
 			}
-		}
-		return ans;
+		}*/
+		VectorSpace A(*this),B(_vec);
+		double p = A.Normalization()*B.Normalization();
+		if (p == 1 || p == (-1))
+			return true;
+		else return false;
+		
 	}
 	catch (const char* str) {
 		cerr << "錯誤: " << str << endl;
@@ -364,22 +384,28 @@ vector<VectorSpace> Orthonormalbasis(vector<VectorSpace> _vec)
 		for (int i = 1; i <_vec.size(); i++)
 		{
 			VectorSpace tem(_vec[i].getvectorsize());
+			//cout << tem;
 			for (int j = 0; j < ans.size(); j++)
 			{
-				//cout <<j<<" " <<ans[j];
-				double up = (_vec[i] * ans[j]);
-				double down = (ans[j] * ans[j]);
-				double mult = up / down;
-				VectorSpace t(_vec[i].getvectorsize());
-				for (int k= 0; k < t.getvectorsize(); k++)
-				{
-					t.changeNumInSpace(k, ans[j].getNumInSpace(k) * mult);
-				}
-				tem=tem+ t ;
+				
+				VectorSpace t;
+
+				double a=(_vec[i] * ans[j])/( ans[j] * ans[j]);
+			//	cout << a << endl;
+			//	cout <<"behind t" <<ans[j] << endl;
+				VectorSpace p(ans[j]);
+				t = p*a;
+				
+			//	cout <<"after t"<<ans[j] << endl;
+				
+				tem = tem + t;
 				
 			}
-			ans.push_back(_vec[i] - tem);
+			ans.push_back(_vec[i]-tem);
+			//cout << ans.size()-1 << " " << ans[ans.size() - 2];
+			//cout << ans.size()<<" "<<ans[ans.size() - 1];
 		}
+		//cout << "---------------------" << endl;
 		for (int i = 0; i < ans.size(); i++)
 		{
 			//cout << ans[i];
@@ -401,9 +427,9 @@ ostream & operator<<(ostream & os, const VectorSpace & _vec)
 	for (int i = 0; i <_vec.Vectorsize; i++)
 	{
 		if(i==0)
-			os << " " << _vec.vec[i]  ;
+			os << " "<<setw(6) << _vec.vec[i]  ;
 		else
-			os << "," << _vec.vec[i];
+			os << "," << setw(6) << _vec.vec[i];
 			
 	}
 	os << " }" << endl;
