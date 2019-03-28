@@ -25,12 +25,14 @@ Matrix::~Matrix()
 
 Matrix::Matrix(Matrix & _matrix)
 {
+	name = _matrix.name;
+
 	row = _matrix.row;
 	column = _matrix.column;
 	matrix = _matrix.matrix;
 }
 
-Matrix::Matrix(string _name)
+Matrix::Matrix(std::string _name)
 {
 	row = 0;
 	column = 0;
@@ -39,7 +41,7 @@ Matrix::Matrix(string _name)
 }
 
 
-Matrix::Matrix(string _name, int _row, int _column, vector<vector<double>> _matrix)
+Matrix::Matrix(std::string _name, int _row, int _column, std::vector<std::vector<double>> _matrix)
 {
 	row = _row;
 	column = _column;
@@ -55,7 +57,7 @@ Matrix::Matrix(string _name, int _row, int _column, vector<vector<double>> _matr
 	}
 }
 
-Matrix::Matrix(string _name, int _row, int _column, vector<VectorSpace> _matrix)
+Matrix::Matrix(std::string _name, int _row, int _column, std::vector<VectorSpace> _matrix)
 {
 	row = _row;
 	column = _column;
@@ -64,14 +66,37 @@ Matrix::Matrix(string _name, int _row, int _column, vector<VectorSpace> _matrix)
 	for (int i = 0; i < row; i++)
 	{
 		matrix[i].resize(column);
-		for (int j = 0; j < column; j++)
-		{
-			matrix[i][j] = _matrix[i].getNumInSpace(j);
+	}
+
+	for (int i = 0; i <row; i++)
+	{
+		for (int j = 0; j <column; j++) {
+			matrix[i][j] = _matrix[j].getNumInSpace(i);
+		}
+	}
+	
+}
+
+Matrix::Matrix(std::string _name, int _row, int _column, VectorSpace * _vec)
+{
+	row = _row;
+	column = _column;
+	name = _name;
+	matrix.resize(row);
+	for (int i = 0; i < row; i++)
+	{
+		matrix[i].resize(column);
+	}
+
+	for (int i = 0; i < row; i++)
+	{
+		for (int j = 0; j < column; j++) {
+			matrix[i][j] =_vec[j].getNumInSpace(i);
 		}
 	}
 }
 
-Matrix::Matrix(string _name, int _row, int _column)
+Matrix::Matrix(std::string _name, int _row, int _column)
 {
 	row = _row;
 	column = _column;
@@ -108,7 +133,7 @@ void Matrix::addRow(double * a, int _size)
 	{
 		if (_size != column)
 			throw "column不一樣";
-		vector<double>tem;
+		std::vector<double>tem;
 		for (int i = 0; i <_size; i++)
 		{
 			tem.push_back(a[i]);
@@ -117,13 +142,13 @@ void Matrix::addRow(double * a, int _size)
 		matrix.push_back(tem);
 	}
 	catch (const char* str) {
-		cerr << "錯誤: " << str << endl;
+		std::cerr << "錯誤: " << str << std::endl;
 	}
 	
 	
 }
 
-void Matrix::addRow(vector<double> _tem, int _size)
+void Matrix::addRow(std::vector<double> _tem, int _size)
 {
 	try
 	{
@@ -133,7 +158,7 @@ void Matrix::addRow(vector<double> _tem, int _size)
 		matrix.push_back(_tem);
 	}
 	catch (const char* str) {
-		cerr << "錯誤: " << str << endl;
+		std::cerr << "錯誤: " << str << std::endl;
 	}
 
 }
@@ -143,7 +168,7 @@ void Matrix::addRow(VectorSpace _tem, int _size)
 	{
 		if (_size != column)
 			throw "column不一樣";
-		vector<double>tem;
+		std::vector<double>tem;
 		for (int i = 0; i < _size; i++)
 		{
 			tem.push_back(_tem.getNumInSpace(i));
@@ -152,7 +177,7 @@ void Matrix::addRow(VectorSpace _tem, int _size)
 		matrix.push_back(tem);
 	}
 	catch (const char* str) {
-		cerr << "錯誤: " << str << endl;
+		std::cerr << "錯誤: " << str << std::endl;
 	}
 
 }
@@ -170,10 +195,10 @@ void Matrix::addColumn(double * a, int _size)
 		
 	}
 	catch (const char* str) {
-		cerr << "錯誤: " << str << endl;
+		std::cerr << "錯誤: " << str << std::endl;
 	}
 }
-void Matrix::addColumn(vector<double> _tem, int _size)
+void Matrix::addColumn(std::vector<double> _tem, int _size)
 {
 	try
 	{
@@ -187,7 +212,7 @@ void Matrix::addColumn(vector<double> _tem, int _size)
 
 	}
 	catch (const char* str) {
-		cerr << "錯誤: " << str << endl;
+		std::cerr << "錯誤: " << str << std::endl;
 	}
 }
 void Matrix::addColumn(VectorSpace _tem, int _size)
@@ -204,7 +229,7 @@ void Matrix::addColumn(VectorSpace _tem, int _size)
 
 	}
 	catch (const char* str) {
-		cerr << "錯誤: " << str << endl;
+		std::cerr << "錯誤: " << str << std::endl;
 	}
 }
 void Matrix::replaceNuminMatrix(int row, int column, double _num)
@@ -217,7 +242,7 @@ double Matrix::getnuminMatrix(int _row, int _column)
 }
 void Matrix::deleterow(int _row)
 {
-	vector <vector<double>>tem;
+	std::vector <std::vector<double>>tem;
 	for (int i = 0; i < row; i++)
 	{
 		if (i == _row) {}
@@ -228,10 +253,10 @@ void Matrix::deleterow(int _row)
 }
 void Matrix::deletecolumn(int _column)
 {
-	vector <vector<double>>tem;
+	std::vector <std::vector<double>>tem;
 	for (int i = 0; i < row; i++)
 	{
-		vector<double>t;
+		std::vector<double>t;
 		for (int j = 0; j < column; j++)
 		{
 			if (j == _column) {}
@@ -250,7 +275,7 @@ int Matrix::getRow()
 {
 	return row;
 }
-string Matrix::getName()
+std::string Matrix::getName()
 {
 	return name;
 }
@@ -270,7 +295,7 @@ Matrix Matrix::operator+(const Matrix & _matrix)
 		return ans;
 	}
 	catch (const char* str) {
-		cerr << "錯誤: " << str << endl;
+		std::cerr << "錯誤: " << str << std::endl;
 	}
 	//return *this ;
 	
@@ -291,7 +316,7 @@ Matrix Matrix::operator-(const Matrix & _matrix)
 		return ans;
 	}
 	catch (const char* str) {
-		cerr << "錯誤: " << str << endl;
+		std::cerr << "錯誤: " << str << std::endl;
 	}
 	//return *this ;
 }
@@ -314,7 +339,7 @@ Matrix Matrix::operator*(const Matrix & _matrix)
 		return ans;
 	}
 	catch (const char* str) {
-		cerr << "錯誤: " << str << endl;
+		std::cerr << "錯誤: " << str << std::endl;
 	}
 	//return *this ;
 }
@@ -346,11 +371,12 @@ Matrix Matrix::operator/(const double & _Scalar)
 
 	}
 	catch (const char* str) {
-		cerr << "錯誤: " << str << endl;
+		std::cerr << "錯誤: " << str << std::endl;
 	}
 }
 Matrix Matrix::operator=(const Matrix & _matrix)
 {
+	name = _matrix.name;
 	row = _matrix.row;
 	column = _matrix.column;
 	matrix = _matrix.matrix;
@@ -393,7 +419,7 @@ Matrix Matrix::operator^(const double & _Scalar)
 
 	}
 	catch (const char* str) {
-		cerr << "錯誤: " << str << endl;
+		std::cerr << "錯誤: " << str << std::endl;
 	}
 }
 Matrix Matrix::Transpose()
@@ -403,7 +429,7 @@ Matrix Matrix::Transpose()
 	//cout << "-----------------" << endl;
 	for (int i = 0; i < column; i++)
 	{
-		vector<double>tem;
+		std::vector<double>tem;
 		for (int j = 0; j < row; j++)
 		{
 			tem.push_back(this->matrix[j][i]);
@@ -483,7 +509,7 @@ double Matrix::determinants()
 		}
 	}
 	catch (const char* str) {
-		cerr << "錯誤: " << str << endl;
+		std::cerr << "錯誤: " << str << std::endl;
 	}
 	//return *this ;
 }
@@ -502,7 +528,7 @@ Matrix Matrix::adjoint()
 				Matrix tempmt;
 				for (int y = 0; y < row; y++)
 				{
-					vector<double>t;
+					std::vector<double>t;
 					for (int x = 0; x < column; x++)
 					{
 						if (y == i || x == j) {
@@ -539,7 +565,7 @@ Matrix Matrix::adjoint()
 		return ans;
 	}
 	catch (const char* str) {
-		cerr << "錯誤: " << str << endl;
+		std::cerr << "錯誤: " << str << std::endl;
 	}
 	//return *this ;
 }
@@ -568,7 +594,7 @@ Matrix Matrix::Inverse()
 		}
 	}
 	catch (const char* str) {
-		cerr << "錯誤: " << str << endl;
+		std::cerr << "錯誤: " << str << std::endl;
 	}
 	//return *this ;
 }
@@ -602,10 +628,17 @@ double Matrix::Rank()
 		{
 			if (_row == tem.row - 1) break;
 			bool allzero = true;
+			bool istriangle=false;
 			for (int _column = _row+1; _column < tem.row; _column++)
 			{
-				if (tem.matrix[_column][row] != 0) { //row->nowcolumn?
-					vector<double>change = tem.matrix[_column];
+				if (_column==tem.row - 1) {
+					if (tem.matrix[_column][_row] == 0)
+					{
+						istriangle = true;
+					}
+				}
+				if (tem.matrix[_column][_row] != 0) { //row->nowcolumn?
+					std::vector<double>change = tem.matrix[_column];
 					tem.matrix[_column] = tem.matrix[_row];
 					tem.matrix[_row] = change;
 					allzero = false;
@@ -613,14 +646,15 @@ double Matrix::Rank()
 				}
 			}
 			if (allzero) {
+				if(istriangle==false)
 				_row--;
 			}
 		}
 	}
 
-	//cout << tem << endl;
+	//std::cout << "rank:"<< std::endl<<tem << endl;
 
-	int rank = min(tem.column,tem.row);
+	int rank = std::min(tem.column,tem.row);
 	for (int i = 0; i < tem.row; i++)
 	{
 		bool allzero = true;
@@ -640,17 +674,696 @@ double Matrix::Rank()
 	return rank;
 
 }
-ostream & operator<<(ostream & os, const Matrix &A)
+re Matrix::linear_system(VectorSpace _vec)
+{
+	re A;
+	try
+	{
+		if (row !=_vec.getvectorsize())
+			throw "線性系統無對應";
+	
+		Matrix tem(*this);
+		std::string *variance = new std::string[tem.column];
+		double *variancenum = new double[tem.column];
+		for (int i = 0; i < tem.column; i++)
+		{
+			variancenum[i] = 0;
+			std::stringstream ss;
+			ss << (i + 1);
+			std::string t;
+			ss >> t;
+			variance[i] = "x"+t;
+			//cout << variance[i] << endl;
+		}
+		tem.column += 1;
+		for (int i = 0; i < row; i++)
+		{
+			tem.matrix[i].push_back(-1 * _vec.getNumInSpace(i));
+		}
+		int nowColumn = 0;
+		double mult = 0;
+		for (int _row = 0; _row < tem.row; _row++)
+		{
+			//cout << _row << "   " << endl << tem;
+			if (tem.matrix[_row][nowColumn] != 0)
+			{
+				for (int _column = nowColumn; _column < tem.row; _column++)
+				{
+					if (_column != _row) {
+						mult = tem.matrix[_column][_row] / tem.matrix[_row][nowColumn];
+
+						for (int i = nowColumn; i < tem.column; i++)
+						{
+							tem.matrix[_column][i] -= mult * tem.matrix[_row][i];
+
+						}
+						//cout << mult << "  " << endl << tem;
+					}
+				}
+				nowColumn++;
+			}
+			else
+			{
+				if (_row == tem.row - 1) break;
+				bool allzero = true;
+				bool istriangle = false;
+				for (int _column = _row + 1; _column < tem.row; _column++)
+				{
+					if (_column == tem.row - 1) {
+						if (tem.matrix[_column][_row] == 0)
+						{
+							istriangle = true;
+						}
+					}
+					if (tem.matrix[_column][_row] != 0) { //row->nowcolumn?
+						std::vector<double>change = tem.matrix[_column];
+						tem.matrix[_column] = tem.matrix[_row];
+						tem.matrix[_row] = change;
+						allzero = false;
+						break;
+					}
+				}
+				if (allzero) {
+					if (istriangle == false)
+					_row--;
+				}
+			}
+		}
+
+
+
+
+
+
+		//////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+	//	cout << tem;
+		VectorSpace temvec(row);
+		for (int i = 0; i < row; i++)
+		{
+			//cout << tem.matrix[i][tem.column - 1] << endl;
+			temvec.changeNumInSpace(tem.matrix[i][tem.column - 1]*-1,i);
+			tem.matrix[i].pop_back();
+		}
+		tem.column -= 1;
+		//std::cout << "tem     " << std::endl<< temvec << std::endl;
+		//std::cout << tem << std::endl;
+		re ans;
+		if (tem.column == tem.row) //是否為方陣
+		{
+			for (int i = tem.row - 1; i >= 0; i--)
+			{
+				if (temvec.getNumInSpace(i) != 0 && tem.matrix[i][i] == 0) //是否 有全0但是解不是0狀態
+				{
+					ans.up = true;
+					ans.A = "有理解不存在";
+					return ans;
+				}
+				else if (temvec.getNumInSpace(i) != 0 && tem.matrix[i][i] != 0) //正常有解
+				{
+					ans.up = false;
+					for (int j = tem.column-1; j > i; j--)
+					{
+						temvec.changeNumInSpace(temvec.getNumInSpace(i)-variancenum[j]*tem.matrix[i][j],i);
+					}
+					variancenum[i] = temvec.getNumInSpace(i) / tem.matrix[i][i];
+				}
+				else //無限多種可能解
+				{
+					ans.up = true;
+
+					std::string phrase="";
+					std::map<std::string, double> coefficent;
+					std::map<std::string, double>::iterator iter;
+					std::string text = "";
+					for (int j = tem.column - 1; j >i; j--)//處理問題
+					{
+						//字串分析
+						std::stringstream ss;
+						
+						
+			
+						for (int k = 0; k <variance[j].size(); k++)
+						{
+							if (variance[j][k] == 'x')//遇到x
+							{
+								ss << text;
+								double _num=1;
+								ss >> _num;
+								std::string text_v ="";
+								while (variance[j][k]!=' '||variance[j][k]!='\0')
+								{
+									if (variance[j][k] == ' '|| variance[j][k] == '\0') break;
+									text_v += variance[j][k];
+									//cout << i << text_v << "|||||" << endl;
+									k++;
+									if (k == variance[j].size()) break;
+								}
+								//text_v += '\0';
+
+								/*for (int i = 1; i <text_v.size(); i++)
+								{
+									if (text_v[i]==32) {
+										text_v[i] = '\0';
+										break;
+									}
+								}*/
+								/*for (iter = coefficent.begin(); iter != coefficent.end(); iter++)
+								{
+									cout << iter->first << "|||" << iter->second << endl;
+								}*/
+							//	cout << i << text_v << "|||||" << endl;
+								iter = coefficent.find(text_v);
+
+								if (iter == coefficent.end()) {
+
+									coefficent.insert(std::pair<std::string, double>(text_v,tem.matrix[i][j]*_num));
+								}
+								else {
+									//cout << iter->second << endl;
+									double n =iter->second;
+									n+= tem.matrix[i][j] * _num;
+									iter->second = n;
+								}
+								
+								text.clear();
+							}
+							else if (variance[j][k] == 'c')//遇到+
+							{
+								ss << text;
+								double _num=1;
+								ss >> _num;
+								iter = coefficent.find("c");
+								if (iter != coefficent.end()) {
+									coefficent.insert(std::pair<std::string, double>("c", tem.matrix[i][j] * _num));
+								}
+								else {
+									iter->second += tem.matrix[i][j] * _num;
+								}
+								text.clear();
+							}
+							else
+							{
+								if (variance[j][k] == ' ' || variance[j][k] == '+') {}
+								else
+								{
+									text += variance[j][k];
+								}
+
+								
+							}
+						}
+						
+
+					
+
+					}
+					///////////////////////////
+					//移向
+					
+					if(tem.matrix[i][i]==0)
+					{ 
+					}
+					else {
+						for (iter = coefficent.begin(); iter != coefficent.end(); iter++)
+						{
+							std::stringstream ss;
+							std::string into;
+							if (iter->first == "c") {
+								double _num = (temvec.getNumInSpace(i) - iter->second) / tem.matrix[i][i];
+								ss << _num;
+								ss >> into;
+							}
+							else
+							{
+								double _num = iter->second*(-1) / tem.matrix[i][i];
+								ss << _num;
+								ss >> into;
+							}
+							phrase += into;
+							phrase += iter->first;
+							iter++;
+							if (iter == coefficent.end())
+							{
+								phrase += '\0';
+
+							}
+							else
+								phrase += " + ";
+							iter--;
+						}
+
+						variance[i] = phrase;
+					}
+				}
+				
+			
+
+
+
+
+
+			}
+
+			if (ans.up)
+			{
+				for (int i = 0; i < tem.row; i++)
+				{
+					if (i == 0)
+					{
+						ans.A += "{ ";
+						ans.A +=variance[i];
+
+					}
+					else if (i + 1 == tem.row)
+					{
+						ans.A += " , ";
+						ans.A += variance[i];
+						ans.A += " }";
+					}
+					else
+					{
+						ans.A += " , ";
+						ans.A += variance[i];
+					}
+				}
+			}
+			else
+			{
+				for (int i = 0; i < tem.column; i++)
+				{
+					ans.B.addNumInSpace(variancenum[i]);
+				}
+			}
+
+
+		}
+		else
+		{
+
+			for (int i = tem.row - 1; i >= 0; i--)
+			{
+				//check allrow
+				bool allzero = true;
+				for (int j = 0; j < tem.column; j++)
+				{
+					if (tem.matrix[i][j] != 0)
+					{
+						allzero = false;
+						break;
+					}
+				}
+				
+
+					if (allzero) {
+						ans.up = true;
+						ans.A = "有理解不存在";
+						return ans; 
+					}
+					else //無限多種可能解
+					{
+						ans.up = true;
+
+						std::string phrase = "";
+						std::map<std::string, double> coefficent;
+						std::map<std::string, double>::iterator iter;
+						std::string text = "";
+						for (int j = tem.column - 1; j >i; j--)//處理問題
+						{
+							//字串分析
+							std::stringstream ss;
+
+
+
+							for (int k = 0; k < variance[j].size(); k++)
+							{
+								if (variance[j][k] == 'x')//遇到x
+								{
+									ss << text;
+									double _num = 1;
+									ss >> _num;
+									std::string text_v = "";
+									while (variance[j][k] != ' ' || variance[j][k] != '\0')
+									{
+										if (variance[j][k] == ' ' || variance[j][k] == '\0') break;
+										text_v += variance[j][k];
+										//cout << i << text_v << "|||||" << endl;
+										k++;
+										if (k == variance[j].size()) break;
+									}
+									//text_v += '\0';
+
+									/*for (int i = 1; i <text_v.size(); i++)
+									{
+										if (text_v[i]==32) {
+											text_v[i] = '\0';
+											break;
+										}
+									}*/
+									/*for (iter = coefficent.begin(); iter != coefficent.end(); iter++)
+									{
+										cout << iter->first << "|||" << iter->second << endl;
+									}*/
+									//	cout << i << text_v << "|||||" << endl;
+									iter = coefficent.find(text_v);
+
+									if (iter == coefficent.end()) {
+
+										coefficent.insert(std::pair<std::string, double>(text_v, tem.matrix[i][j] * _num));
+									}
+									else {
+										//cout << iter->second << endl;
+										double n = iter->second;
+										n += tem.matrix[i][j] * _num;
+										iter->second = n;
+									}
+
+									text.clear();
+								}
+								else if (variance[j][k] == 'c')//遇到+
+								{
+									ss << text;
+									double _num = 1;
+									ss >> _num;
+									iter = coefficent.find("c");
+									if (iter != coefficent.end()) {
+										coefficent.insert(std::pair<std::string, double>("c", tem.matrix[i][j] * _num));
+									}
+									else {
+										iter->second += tem.matrix[i][j] * _num;
+									}
+									text.clear();
+								}
+								else
+								{
+									if (variance[j][k] == ' ' || variance[j][k] == '+') {}
+									else
+									{
+										text += variance[j][k];
+									}
+
+
+								}
+							}
+
+
+
+
+						}
+						///////////////////////////
+						//移向
+
+						if (tem.matrix[i][i] == 0)
+						{
+							
+						}
+						else {
+							for (iter = coefficent.begin(); iter != coefficent.end(); iter++)
+							{
+								std::stringstream ss;
+								std::string into;
+								if (iter->first == "c") {
+									double _num = (temvec.getNumInSpace(i) - iter->second) / tem.matrix[i][i];
+									ss << _num;
+									ss >> into;
+								}
+								else
+								{
+									double _num = iter->second*(-1) / tem.matrix[i][i];
+									ss << _num;
+									ss >> into;
+								}
+								phrase += into;
+								phrase += iter->first;
+								iter++;
+								if (iter == coefficent.end())
+								{
+									phrase += '\0';
+
+								}
+								else
+									phrase += " + ";
+								iter--;
+							}
+
+							variance[i] = phrase;
+						}
+					}
+				
+			}
+			if (ans.up)
+			{
+				for (int i = 0; i < tem.column; i++)
+				{
+					if (i == 0)
+					{
+						ans.A += "{ ";
+						ans.A += variance[i];
+
+					}
+					else if (i + 1 == tem.column)
+					{
+						ans.A += " , ";
+						ans.A += variance[i];
+						ans.A += " }";
+					}
+					else
+					{
+						ans.A += " , ";
+						ans.A += variance[i];
+					}
+				}
+			}
+			else
+			{
+				for (int i = 0; i < tem.column; i++)
+				{
+					ans.B.addNumInSpace(variancenum[i]);
+				}
+			}
+
+		}
+
+
+
+
+
+
+		//cout << tem;
+		return ans;
+
+
+
+
+	}
+	catch (const char* str) {
+		std::cerr << "錯誤: " << str << std::endl;
+	}
+	return re();
+}
+std::ostream & operator<<(std::ostream & os, const Matrix &A)
 {
 	for (int i = 0; i < A.row; i++)
 	{
 	
 		for (int j = 0; j <A.column; j++) {
-			if (j == A.column - 1) os <<setw(5)<<A.matrix[i][j];
-			else os <<left<<setw(5) << A.matrix[i][j] << " , ";
+			if (j == A.column - 1) os << std::setw(5)<<A.matrix[i][j];
+			else os << std::left<< std::setw(5) << A.matrix[i][j] << " , ";
 		}
-		os << endl;
+		os << std::endl;
 	}
-	os << endl;
+	os << std::endl;
 	return os;
+}
+
+bool Linear_independent(std::vector<VectorSpace> _vec)
+{
+	Matrix tem("tem",_vec[0].getvectorsize(),_vec.size(),_vec);
+	//cout << tem;
+	int nowColumn = 0;
+	double mult = 0;
+	for (int _row = 0; _row < tem.getRow(); _row++)
+	{
+		//cout << _row << "   " << endl << tem;
+		if (tem.getnuminMatrix(_row,nowColumn) != 0)
+		{
+			for (int _column = nowColumn; _column < tem.getRow(); _column++)
+			{
+				if (_column != _row) {
+					mult = tem.getnuminMatrix(_column,_row) / tem.getnuminMatrix(_row, nowColumn);
+
+					for (int i = nowColumn; i < tem.getcolumn(); i++)
+					{
+						
+						tem.replaceNuminMatrix(_column, i, tem.getnuminMatrix(_column,i) - mult*tem.getnuminMatrix(_row, i));
+
+					}
+					//cout << mult << "  " << endl << tem;
+				}
+			}
+			nowColumn++;
+		}
+		else
+		{
+			if (_row == tem.getRow() - 1) break;
+			bool allzero = true;
+			bool istriangle = false;
+			for (int _column = _row + 1; _column < tem.getRow(); _column++)
+			{
+				if (_column == tem.getRow() - 1) {
+					if (tem.getnuminMatrix(_column,_row) == 0)
+					{
+						istriangle = true;
+					}
+				}
+				if (tem.getnuminMatrix(_column, _row) != 0) { //row->nowcolumn?
+					std::vector<double>change;
+					for (int i = 0; i <tem.getcolumn(); i++)
+					{
+						change.push_back(tem.getnuminMatrix(_column, i));
+					}
+					
+					for (int i = 0; i < tem.getcolumn(); i++)
+					{
+						//change.push_back(tem.getnuminMatrix(_column, i));
+						tem.replaceNuminMatrix(_column, i,tem.getnuminMatrix(_row, i));
+					}
+					for (int i = 0; i < tem.getcolumn(); i++)
+					{
+						//change.push_back(tem.getnuminMatrix(_column, i));
+						tem.replaceNuminMatrix(_row, i, change[i]);
+					}
+					//tem.matrix[_column] = tem.matrix[_row];
+					//tem.matrix[_row] = change;
+					allzero = false;
+					break;
+				}
+			}
+			if (allzero) {
+				if (istriangle == false)
+				_row--;
+			}
+		}
+	}
+
+	//cout << tem << endl;
+	/*有0列代表可以組合出為ld 否則li*/
+	bool ans = true; 
+	for (int i = 0; i < tem.getRow(); i++)
+	{
+		bool allzero = true;
+		for (int j = 0; j < tem.getcolumn(); j++)
+		{
+			if (tem.getnuminMatrix(i,j)!= 0) {
+				allzero = false;
+				break;
+			}
+		}
+	
+		if (allzero == true)
+		{
+			ans = false;
+			break;
+		}
+		
+	}
+	//cout << tem;
+	return ans;
+}
+
+bool Linear_independent(int howmany,VectorSpace *_vec)
+{
+	Matrix tem("tem", _vec[0].getvectorsize(), howmany, _vec);
+	//cout << tem;
+	int nowColumn = 0;
+	double mult = 0;
+	for (int _row = 0; _row < tem.getRow(); _row++)
+	{
+		//cout << _row << "   " << endl << tem;
+		if (tem.getnuminMatrix(_row, nowColumn) != 0)
+		{
+			for (int _column = nowColumn; _column < tem.getRow(); _column++)
+			{
+				if (_column != _row) {
+					mult = tem.getnuminMatrix(_column, _row) / tem.getnuminMatrix(_row, nowColumn);
+
+					for (int i = nowColumn; i < tem.getcolumn(); i++)
+					{
+
+						tem.replaceNuminMatrix(_column, i, tem.getnuminMatrix(_column, i) - mult * tem.getnuminMatrix(_row, i));
+
+					}
+					//cout << mult << "  " << endl << tem;
+				}
+			}
+			nowColumn++;
+		}
+		else
+		{
+			if (_row == tem.getRow() - 1) break;
+			bool allzero = true;
+			bool istriangle = false;
+			for (int _column = _row + 1; _column < tem.getRow(); _column++)
+			{
+				if (_column == tem.getRow() - 1) {
+					if (tem.getnuminMatrix(_column, _row) == 0)
+					{
+						istriangle = true;
+					}
+				}
+				if (tem.getnuminMatrix(_column, _row) != 0) { //row->nowcolumn?
+					std::vector<double>change;
+					for (int i = 0; i < tem.getcolumn(); i++)
+					{
+						change.push_back(tem.getnuminMatrix(_column, i));
+					}
+
+					for (int i = 0; i < tem.getcolumn(); i++)
+					{
+						//change.push_back(tem.getnuminMatrix(_column, i));
+						tem.replaceNuminMatrix(_column, i, tem.getnuminMatrix(_row, i));
+					}
+					for (int i = 0; i < tem.getcolumn(); i++)
+					{
+						//change.push_back(tem.getnuminMatrix(_column, i));
+						tem.replaceNuminMatrix(_row, i, change[i]);
+					}
+					//tem.matrix[_column] = tem.matrix[_row];
+					//tem.matrix[_row] = change;
+					allzero = false;
+					break;
+				}
+			}
+			if (allzero) {
+				if (istriangle == false)
+				_row--;
+			}
+		}
+	}
+
+	//cout << tem << endl;
+	/*有0列代表可以組合出為ld 否則li*/
+	bool ans = true;
+	for (int i = 0; i < tem.getRow(); i++)
+	{
+		bool allzero = true;
+		for (int j = 0; j < tem.getcolumn(); j++)
+		{
+			if (tem.getnuminMatrix(i, j) != 0) {
+				allzero = false;
+				break;
+			}
+		}
+
+		if (allzero == true)
+		{
+			ans = false;
+			break;
+		}
+
+	}
+	//cout << tem;
+	return ans;
 }

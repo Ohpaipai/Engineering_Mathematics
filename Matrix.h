@@ -1,22 +1,36 @@
 #pragma once
 #include"VectorSpace.h"
+
+
+
+
+typedef struct MyStruct
+{
+	bool up;
+	std::string A;
+	VectorSpace B;
+}re;
+
+
+
 class Matrix
 {
 public:
 	Matrix();
 	~Matrix();
 	Matrix(Matrix& _matrix);
-	Matrix(string _name);
-	Matrix(string _name, int _row, int _column, vector<vector<double>>_matrix);
-	Matrix(string _name, int _row, int _column, vector<VectorSpace>_matrix);
-	Matrix(string _name, int _row, int _column);
+	Matrix(std::string _name);
+	Matrix(std::string _name, int _row, int _column, std::vector<std::vector<double>>_matrix);
+	Matrix(std::string _name, int _row, int _column, std::vector<VectorSpace>_matrix);
+	Matrix(std::string _name, int _row, int _column, VectorSpace*_vec);
+	Matrix(std::string _name, int _row, int _column);
 	Matrix(int _row, int _column);
-	friend ostream& operator<<(ostream& os, const Matrix&);
+	friend std::ostream& operator<<(std::ostream& os, const Matrix&);
 	void addRow(double *a,int _size);
-	void addRow(vector<double> _tem, int _size);
+	void addRow(std::vector<double> _tem, int _size);
 	void addRow(VectorSpace _tem, int _size);
 	void addColumn(double *a, int _size);
-	void addColumn(vector<double> _tem, int _size);
+	void addColumn(std::vector<double> _tem, int _size);
 	void addColumn(VectorSpace _tem, int _size);
 	void replaceNuminMatrix(int row, int column, double _num);
 	double getnuminMatrix(int _row, int _column);
@@ -24,7 +38,7 @@ public:
 	void deletecolumn(int _column);
 	int getcolumn();
 	int getRow();
-	string getName();
+	std::string getName();
 	Matrix operator +(const Matrix&_matrix);
 	Matrix operator -(const Matrix&_matrix);
 	Matrix operator *(const Matrix&_matrix);
@@ -37,15 +51,20 @@ public:
 	Matrix adjoint();
 	Matrix Inverse();
 	double Rank();
-
+	re  linear_system(VectorSpace _vec);
 	//linear system
+
 	//eigenvaule
 	//power method of eigen value
 	//least square
 private:
-	vector<vector<double>>matrix;
+	std::vector<std::vector<double>>matrix;
 	int row;
 	int column;
-	string name;
+	std::string name;
 };
 
+
+
+bool Linear_independent(std::vector<VectorSpace> _vec);
+bool Linear_independent(int howmany,VectorSpace *_vec);

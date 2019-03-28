@@ -17,7 +17,7 @@ VectorSpace::~VectorSpace()
 	name.clear();
 }
 
-VectorSpace::VectorSpace(string _name, int _size, double * a)
+VectorSpace::VectorSpace(std::string _name, int _size, double * a)
 {
 	//use try catch
 	name = _name;
@@ -29,7 +29,7 @@ VectorSpace::VectorSpace(string _name, int _size, double * a)
 	
 }
 
-VectorSpace::VectorSpace(string _name, int _size, vector<double> _vec)
+VectorSpace::VectorSpace(std::string _name, int _size, std::vector<double> _vec)
 {
 	//use try catch
 	name = _name;
@@ -37,12 +37,12 @@ VectorSpace::VectorSpace(string _name, int _size, vector<double> _vec)
 	vec = _vec;
 }
 
-VectorSpace::VectorSpace(string _name)
+VectorSpace::VectorSpace(std::string _name)
 {
 	name = _name;
 }
 
-VectorSpace::VectorSpace(string _name, int _size)
+VectorSpace::VectorSpace(std::string _name, int _size)
 {
 	//use try catch
 	name = _name;
@@ -72,6 +72,7 @@ void VectorSpace::changeNumInSpace(double _num, int place)
 
 VectorSpace::VectorSpace(const VectorSpace & _vec)
 {
+	name = _vec.name;
 	vec =_vec.vec;
 	Vectorsize = _vec.Vectorsize;
 }
@@ -83,7 +84,7 @@ int VectorSpace::getvectorsize()
 
 void VectorSpace::deleteNumplace(int place)
 {
-	vector<double>newone;
+	std::vector<double>newone;
 	for (int i = 0; i <Vectorsize; i++)
 	{
 		if(i==place){}
@@ -99,7 +100,7 @@ double VectorSpace::getNumInSpace(int place)
 	return vec[place];
 }
 
-string VectorSpace::getName()
+std::string VectorSpace::getName()
 {
 	return name;
 }
@@ -119,13 +120,14 @@ VectorSpace VectorSpace::operator+(const VectorSpace & _vec)
 		return ans;
 	}
 	catch (const char* str) {
-		cerr << "¿ù»~: " << str << endl;
+		std::cerr << "¿ù»~: " << str << std::endl;
 	}
 	return VectorSpace();
 }
 
 VectorSpace VectorSpace::operator=(const VectorSpace & _vec)
 {
+	name = _vec.name;
 	vec = _vec.vec;
 	Vectorsize = _vec.Vectorsize;
 	return *this;
@@ -146,7 +148,7 @@ VectorSpace VectorSpace::operator-(const VectorSpace & _vec)
 		return ans;
 	}
 	catch (const char* str) {
-		cerr << "¿ù»~: " << str << endl;
+		std::cerr << "¿ù»~: " << str << std::endl;
 	}
 	return VectorSpace();
 }
@@ -166,7 +168,7 @@ double VectorSpace::operator*(const VectorSpace & _vec)
 		return ans;
 	}
 	catch (const char* str) {
-		cerr << "¿ù»~: " << str << endl;
+		std::cerr << "¿ù»~: " << str << std::endl;
 	}
 	return 0.0;
 }
@@ -187,7 +189,7 @@ VectorSpace VectorSpace::operator/(const double & _Scalar)
 		return ans;
 	}
 	catch (const char* str) {
-		cerr << "¿ù»~: " << str << endl;
+		std::cerr << "¿ù»~: " << str << std::endl;
 	}
 	return VectorSpace();
 
@@ -218,7 +220,7 @@ VectorSpace VectorSpace::operator^(const VectorSpace & _vec)
 		return ans;
 	}
 	catch (const char* str) {
-		cerr << "¿ù»~: " << str << endl;
+		std::cerr << "¿ù»~: " << str << std::endl;
 	}
 	return VectorSpace();
 }
@@ -256,7 +258,7 @@ double VectorSpace::AngleBetween(VectorSpace & _vec)
 		return RadtoAng(acos((*this*_vec) / (_vec.Norm()*this->Norm())));
 	}
 	catch (const char* str) {
-		cerr << "¿ù»~: " << str << endl;
+		std::cerr << "¿ù»~: " << str << std::endl;
 	}
 	return 0;
 	
@@ -271,7 +273,7 @@ double VectorSpace::TriangleArea(VectorSpace & _vec)
 		return 0.5*this->Norm()*_vec.Norm()*RadtoAng(sin(this->AngleBetween(_vec)));
 	}
 	catch (const char* str) {
-		cerr << "¿ù»~: " << str << endl;
+		std::cerr << "¿ù»~: " << str << std::endl;
 	}
 	return 0;
 	
@@ -292,7 +294,7 @@ VectorSpace VectorSpace::Component(VectorSpace & _vec)
 		return ans;
 	}
 	catch (const char* str) {
-		cerr << "¿ù»~: " << str << endl;
+		std::cerr << "¿ù»~: " << str << std::endl;
 	}
 	return VectorSpace();
 }
@@ -313,7 +315,7 @@ VectorSpace VectorSpace::Projection(VectorSpace & _vec)
 		return ans;
 	}
 	catch (const char* str) {
-		cerr << "¿ù»~: " << str << endl;
+		std::cerr << "¿ù»~: " << str << std::endl;
 	}
 	return VectorSpace();
 }
@@ -341,7 +343,7 @@ bool VectorSpace::Parallel(VectorSpace & _vec)
 		
 	}
 	catch (const char* str) {
-		cerr << "¿ù»~: " << str << endl;
+		std::cerr << "¿ù»~: " << str << std::endl;
 	}
 	return false;
 }
@@ -358,12 +360,12 @@ bool VectorSpace::Orthohonal(VectorSpace & _vec)
 		else return false;
 	}
 	catch (const char* str) {
-		cerr << "¿ù»~: " << str << endl;
+		std::cerr << "¿ù»~: " << str << std::endl;
 	}
 	return false;
 }
 
-vector<VectorSpace> Orthonormalbasis(vector<VectorSpace> _vec)
+std::vector<VectorSpace> Orthonormalbasis(std::vector<VectorSpace> _vec)
 {
 	bool wrong = false;
 	for (int i = 1; i <_vec.size(); i++)
@@ -378,7 +380,7 @@ vector<VectorSpace> Orthonormalbasis(vector<VectorSpace> _vec)
 	{
 		if (wrong)
 			throw "size¤£¤@¼Ë";
-		vector<VectorSpace>ans;
+		std::vector<VectorSpace>ans;
 		ans.push_back(_vec[0]);
 		//cout << ans[0] << endl;
 		for (int i = 1; i <_vec.size(); i++)
@@ -414,24 +416,24 @@ vector<VectorSpace> Orthonormalbasis(vector<VectorSpace> _vec)
 		return ans;
 	}
 	catch (const char* str) {
-		cerr << "¿ù»~: " << str << endl;
+		std::cerr << "¿ù»~: " << str << std::endl;
 	}
-	return vector<VectorSpace>();
+	return std::vector<VectorSpace>();
 }
 
 
 
-ostream & operator<<(ostream & os, const VectorSpace & _vec)
+std::ostream & operator<<(std::ostream & os, const VectorSpace & _vec)
 {
 	os << "{";
 	for (int i = 0; i <_vec.Vectorsize; i++)
 	{
 		if(i==0)
-			os << " "<<setw(6) << _vec.vec[i]  ;
+			os << " "<< std::setw(6) << _vec.vec[i]  ;
 		else
-			os << "," << setw(6) << _vec.vec[i];
+			os << "," << std::setw(6) << _vec.vec[i];
 			
 	}
-	os << " }" << endl;
+	os << " }" << std::endl;
 	return os;
 }
