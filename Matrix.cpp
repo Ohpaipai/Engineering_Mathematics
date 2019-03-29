@@ -646,8 +646,11 @@ double Matrix::Rank()
 				}
 			}
 			if (allzero) {
-				if(istriangle==false)
-				_row--;
+				if (istriangle == false)
+				{
+					_row--;
+					nowColumn++;
+				}
 			}
 		}
 	}
@@ -704,6 +707,7 @@ re Matrix::linear_system(VectorSpace _vec)
 		double mult = 0;
 		for (int _row = 0; _row < tem.row; _row++)
 		{
+			//std::cout << tem;
 			//cout << _row << "   " << endl << tem;
 			if (tem.matrix[_row][nowColumn] != 0)
 			{
@@ -745,7 +749,10 @@ re Matrix::linear_system(VectorSpace _vec)
 				}
 				if (allzero) {
 					if (istriangle == false)
-					_row--;
+					{
+						_row--;
+						nowColumn++;
+					}
 				}
 			}
 		}
@@ -759,7 +766,7 @@ re Matrix::linear_system(VectorSpace _vec)
 
 
 
-	//	cout << tem;
+		std::cout << tem;
 		VectorSpace temvec(row);
 		for (int i = 0; i < row; i++)
 		{
@@ -775,7 +782,7 @@ re Matrix::linear_system(VectorSpace _vec)
 		{
 			for (int i = tem.row - 1; i >= 0; i--)
 			{
-				if (temvec.getNumInSpace(i) != 0 && tem.matrix[i][i] == 0) //是否 有全0但是解不是0狀態
+				if (temvec.getNumInSpace(i) != 0 && tem.matrix[i][i] == 0 && ans.up == false) //是否 有全0但是解不是0狀態
 				{
 					ans.up = true;
 					ans.A = "有理解不存在";
@@ -807,8 +814,14 @@ re Matrix::linear_system(VectorSpace _vec)
 			
 						for (int k = 0; k <variance[j].size(); k++)
 						{
+							/*iter = coefficent.find("c");
+							if (iter == coefficent.end()) {
+								coefficent.insert(std::pair<std::string, double>("c", 0));
+							}*/
 							if (variance[j][k] == 'x')//遇到x
 							{
+
+								ss.clear();
 								ss << text;
 								double _num=1;
 								ss >> _num;
@@ -856,7 +869,7 @@ re Matrix::linear_system(VectorSpace _vec)
 								double _num=1;
 								ss >> _num;
 								iter = coefficent.find("c");
-								if (iter != coefficent.end()) {
+								if (iter == coefficent.end()) {
 									coefficent.insert(std::pair<std::string, double>("c", tem.matrix[i][j] * _num));
 								}
 								else {
@@ -882,9 +895,97 @@ re Matrix::linear_system(VectorSpace _vec)
 					}
 					///////////////////////////
 					//移向
-					
+					/*iter = coefficent.find("c");
+					if (iter == coefficent.end()) {
+						coefficent.insert(std::pair<std::string, double>("c",temvec.getNumInSpace(i)));
+					}
+					else {
+						iter->second += temvec.getNumInSpace(i);
+						std::cout << iter->second << std::endl;
+					}*/
+
+
 					if(tem.matrix[i][i]==0)
 					{ 
+						std::map<std::string, double>::iterator itrs;
+						std::string small="z99999999999";
+						int smallnum = 0;
+						int smllcof = 0;
+						std::string deletename = "";
+						for (iter = coefficent.begin(); iter != coefficent.end(); iter++)//找出最小的
+						{
+							if (iter->first != "c")
+							{
+								if (iter->first < small) {
+									small = iter->first;
+									deletename = iter->first;
+									itrs = iter;
+									std::string comp="";
+									for (int q = 1; q < iter->first.size(); q++)
+									{
+										comp += iter->first[q];
+									}
+									std::stringstream w;
+									w << comp;
+									w >> smallnum;
+									smllcof = iter->second;
+								}
+							}
+						}
+					
+						iter = coefficent.find("c");
+						if (iter == coefficent.end()) {
+							coefficent.insert(std::pair<std::string, double>("c", 0));
+						}
+					
+
+						for (iter = coefficent.begin(); iter != coefficent.end(); iter++)
+						{
+							if (iter->first != deletename) {
+								std::stringstream ss;
+								std::string into;
+								if (iter->first == "c") {
+									//std::cout << temvec.getNumInSpace(i) << std::endl;
+									double _num = (temvec.getNumInSpace(i) - iter->second) / smllcof;
+									ss << _num;
+									ss >> into;
+								}
+								else
+								{
+									double _num = iter->second*(-1) / smllcof;
+									ss << _num;
+									ss >> into;
+								}
+								phrase += into;
+								phrase += iter->first;
+								iter++;
+
+								if (iter == coefficent.end())
+								{
+									phrase += '\0';
+
+								}
+								else
+								{
+									
+										
+										phrase += " + ";
+									
+								}
+								iter--;
+							}
+						}
+
+						variance[smallnum-1] = phrase;
+						
+						/*for (int m = variance[smallnum-1].size(); m >=0; m--)
+						{
+							if (variance[smallnum - 1][m] == '+')
+							{
+
+							}
+						}*/
+						
 					}
 					else {
 						for (iter = coefficent.begin(); iter != coefficent.end(); iter++)
@@ -931,6 +1032,27 @@ re Matrix::linear_system(VectorSpace _vec)
 			{
 				for (int i = 0; i < tem.row; i++)
 				{
+					for (int j = variance[i].size()-1; j >=0 ; j--)
+					{
+						bool anything = false;
+						while (1) {
+						//	std::cout << variance[i][j] << std::endl;
+							if ((variance[i][j] >= 48 & variance[i][j] <= 57) || variance[i][j] == 'c')
+							{
+								anything = true;
+								//variance[i][j + 1] = '\0';
+								for (int v = j+1; v <=variance[i].size() - 1; v++)
+								{
+									variance[i][v] = '\0';
+								}
+								break;
+							}
+							j--;
+						}
+						if (anything) {
+							break;
+						}
+					}
 					if (i == 0)
 					{
 						ans.A += "{ ";
@@ -990,20 +1112,30 @@ re Matrix::linear_system(VectorSpace _vec)
 						std::map<std::string, double> coefficent;
 						std::map<std::string, double>::iterator iter;
 						std::string text = "";
-						for (int j = tem.column - 1; j >i; j--)//處理問題
+						for (int j = tem.column - 1; j > i; j--)//處理問題
 						{
 							//字串分析
 							std::stringstream ss;
 
-
+							//std::cout <<j<<" "<<variance[j] << std::endl;
 
 							for (int k = 0; k < variance[j].size(); k++)
 							{
+								
+								iter = coefficent.find("c");
+								if (iter == coefficent.end()) {
+									coefficent.insert(std::pair<std::string, double>("c", 0));
+								}
+
 								if (variance[j][k] == 'x')//遇到x
 								{
+									ss.clear();
+									//ss.str ="";
+									//std::cout << text << std::endl;
 									ss << text;
 									double _num = 1;
 									ss >> _num;
+									//std::cout << _num << std::endl;
 									std::string text_v = "";
 									while (variance[j][k] != ' ' || variance[j][k] != '\0')
 									{
@@ -1034,10 +1166,13 @@ re Matrix::linear_system(VectorSpace _vec)
 										coefficent.insert(std::pair<std::string, double>(text_v, tem.matrix[i][j] * _num));
 									}
 									else {
-										//cout << iter->second << endl;
+									//	std::cout<<"     "<<iter->first<<"   " <<iter->second<< std::endl;
+										//std::cout << j << " " << variance[j] << std::endl;
 										double n = iter->second;
+									//	std::cout <<  _num <<std::endl;
 										n += tem.matrix[i][j] * _num;
 										iter->second = n;
+										
 									}
 
 									text.clear();
@@ -1048,7 +1183,7 @@ re Matrix::linear_system(VectorSpace _vec)
 									double _num = 1;
 									ss >> _num;
 									iter = coefficent.find("c");
-									if (iter != coefficent.end()) {
+									if (iter == coefficent.end()) {
 										coefficent.insert(std::pair<std::string, double>("c", tem.matrix[i][j] * _num));
 									}
 									else {
@@ -1074,12 +1209,104 @@ re Matrix::linear_system(VectorSpace _vec)
 						}
 						///////////////////////////
 						//移向
+						/*iter = coefficent.find("c");
+						if (iter == coefficent.end()) {
+							coefficent.insert(std::pair<std::string, double>("c",temvec.getNumInSpace(i)));
+						}
+						else {
+							iter->second += temvec.getNumInSpace(i);
+							std::cout << iter->second << std::endl;
+						}*/
+
 
 						if (tem.matrix[i][i] == 0)
 						{
-							
+							std::map<std::string, double>::iterator itrs;
+							std::string small = "z99999999999";
+							int smallnum = 0;
+							int smllcof = 0;
+							std::string deletename = "";
+							for (iter = coefficent.begin(); iter != coefficent.end(); iter++)//找出最小的
+							{
+								if (iter->first != "c")
+								{
+									if (iter->first < small) {
+										small = iter->first;
+										deletename = iter->first;
+										itrs = iter;
+										std::string comp = "";
+										for (int q = 1; q < iter->first.size(); q++)
+										{
+											comp += iter->first[q];
+										}
+										std::stringstream w;
+										w << comp;
+										w >> smallnum;
+										smllcof = iter->second;
+									}
+								}
+							}
+
+							iter = coefficent.find("c");
+							if (iter == coefficent.end()) {
+								coefficent.insert(std::pair<std::string, double>("c", 0));
+							}
+
+
+							for (iter = coefficent.begin(); iter != coefficent.end(); iter++)
+							{
+								if (iter->first != deletename) {
+									std::stringstream ss;
+									std::string into;
+									if (iter->first == "c") {
+										//std::cout << temvec.getNumInSpace(i) << std::endl;
+										double _num = (temvec.getNumInSpace(i) - iter->second) / smllcof;
+										ss << _num;
+										ss >> into;
+									}
+									else
+									{
+										double _num = iter->second*(-1) / smllcof;
+										ss << _num;
+										ss >> into;
+									}
+									phrase += into;
+									phrase += iter->first;
+									iter++;
+
+									if (iter == coefficent.end())
+									{
+										phrase += '\0';
+
+									}
+									else
+									{
+
+
+										phrase += " + ";
+
+									}
+									iter--;
+								}
+							}
+
+							variance[smallnum - 1] = phrase;
+
+							/*for (int m = variance[smallnum-1].size(); m >=0; m--)
+							{
+								if (variance[smallnum - 1][m] == '+')
+								{
+
+								}
+							}*/
+
 						}
 						else {
+							iter = coefficent.find("c");
+							if (iter == coefficent.end()) {
+								coefficent.insert(std::pair<std::string, double>("c", 0));
+							}
+
 							for (iter = coefficent.begin(); iter != coefficent.end(); iter++)
 							{
 								std::stringstream ss;
@@ -1091,10 +1318,13 @@ re Matrix::linear_system(VectorSpace _vec)
 								}
 								else
 								{
+									//std::cout<< iter->first << "    :    "<<iter->second<< std::endl;
+									//std::cout << iter->first << std::endl;
 									double _num = iter->second*(-1) / tem.matrix[i][i];
 									ss << _num;
 									ss >> into;
 								}
+								
 								phrase += into;
 								phrase += iter->first;
 								iter++;
@@ -1117,6 +1347,27 @@ re Matrix::linear_system(VectorSpace _vec)
 			{
 				for (int i = 0; i < tem.column; i++)
 				{
+					for (int j = variance[i].size() - 1; j >= 0; j--)
+					{
+						bool anything = false;
+						while (1) {
+							//	std::cout << variance[i][j] << std::endl;
+							if ((variance[i][j] >= 48 & variance[i][j] <= 57) || variance[i][j] == 'c')
+							{
+								anything = true;
+								//variance[i][j + 1] = '\0';
+								for (int v = j + 1; v <= variance[i].size() - 1; v++)
+								{
+									variance[i][v] = '\0';
+								}
+								break;
+							}
+							j--;
+						}
+						if (anything) {
+							break;
+						}
+					}
 					if (i == 0)
 					{
 						ans.A += "{ ";
@@ -1243,7 +1494,10 @@ bool Linear_independent(std::vector<VectorSpace> _vec)
 			}
 			if (allzero) {
 				if (istriangle == false)
-				_row--;
+				{
+					_row--;
+					nowColumn++;
+				}
 			}
 		}
 	}
@@ -1338,7 +1592,10 @@ bool Linear_independent(int howmany,VectorSpace *_vec)
 			}
 			if (allzero) {
 				if (istriangle == false)
-				_row--;
+				{
+					_row--;
+					nowColumn++;
+				}
 			}
 		}
 	}

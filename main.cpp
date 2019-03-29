@@ -6,7 +6,7 @@ int main() {
 	double a[5] = { 1,2,3,4,5 };
 	double b[3] = { 1,2,3 };
 	double c[3] = { 2,4,6 };
-	double aa[2][3] = { {5,2,1},{5,6,-11} };
+	double aa[2][3] = { {1,2,3},{4,3,4} };
 	double ab[3][4] = { {1, 2, 3, 3}, { 2,1,0,6 }, { 2,7,4,5 } };
 	//{3,0,2,2},{-6,42,24,54},{21,-21,0,-15}
 	//{1, 0, 0, 0}, { 0,1,0,0 }, { 0,0,0,1 }
@@ -15,7 +15,7 @@ int main() {
 	double x[3] = {1,1,1};
 	double y[3] = { 1,2,2 };
 	double z[3] = {1,1,0};
-	double k[2] = { 0,0 };
+	double k[2] = { 0,8 };
 	VectorSpace x1("nam", 3, x);
 	VectorSpace x2("nam", 3, y);
 	VectorSpace x3("nam", 3, z);
