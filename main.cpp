@@ -6,7 +6,7 @@ int main() {
 	double a[5] = { 1,2,3,4,5 };
 	double b[3] = { 1,2,3 };
 	double c[3] = { 2,4,6 };
-	double aa[2][3] = { {1,2,3},{4,3,4} };
+	double aa[3][3] = { {7,7,9},{8,8,5},{5,78,3} };
 	double ab[3][4] = { {1, 2, 3, 3}, { 2,1,0,6 }, { 2,7,4,5 } };
 	//{3,0,2,2},{-6,42,24,54},{21,-21,0,-15}
 	//{1, 0, 0, 0}, { 0,1,0,0 }, { 0,0,0,1 }
@@ -15,11 +15,11 @@ int main() {
 	double x[3] = {1,1,1};
 	double y[3] = { 1,2,2 };
 	double z[3] = {1,1,0};
-	double k[2] = { 0,8 };
+	double k[3] = { 0,0,0 };
 	VectorSpace x1("nam", 3, x);
 	VectorSpace x2("nam", 3, y);
 	VectorSpace x3("nam", 3, z);
-	VectorSpace x4("nam", 2, k);
+	VectorSpace x4("nam", 3, k);
 	std::vector<VectorSpace>f;
 	f.push_back(x1);
 	f.push_back(x2);
@@ -28,8 +28,8 @@ int main() {
 	//m6.Rank();
 	//cout << m6;
 	std::vector<std::vector<double>>t;
-	t.resize(2);
-	for (int i = 0; i < 2; i++)
+	t.resize(3);
+	for (int i = 0; i < 3; i++)
 	{
 		t[i].resize(3);
 		for (int j = 0; j < 3; j++)
@@ -48,12 +48,12 @@ int main() {
 		}
 	}
 	std::string name = "d";
-	Matrix m1(name,2, 3,t);	
+	Matrix m1(name,3, 3,t);	
 	//cout << m1.Rank() << endl;
 	re ans = m1.linear_system(x4);
 	if (ans.up) std::cout << ans.A << std::endl;
 	else std::cout << ans.B;
-	Matrix m2(name, 3, 4, tt);
+//	Matrix m2(name, 3, 4, tt);
 	//cout << Linear_independent(f) << endl;
 	//cout << m1.Inverse() << endl;
 	//cout << m1.Rank() << endl;
@@ -69,3 +69,7 @@ int main() {
 	system("pause");
 	return 0;
 }
+
+
+
+

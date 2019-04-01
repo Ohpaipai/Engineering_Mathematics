@@ -18,7 +18,7 @@ class Matrix
 public:
 	Matrix();
 	~Matrix();
-	Matrix(Matrix& _matrix);
+	Matrix(const Matrix& _matrix);
 	Matrix(std::string _name);
 	Matrix(std::string _name, int _row, int _column, std::vector<std::vector<double>>_matrix);
 	Matrix(std::string _name, int _row, int _column, std::vector<VectorSpace>_matrix);
@@ -51,10 +51,11 @@ public:
 	Matrix adjoint();
 	Matrix Inverse();
 	double Rank();
+	Matrix eigenMatrix(double);
 	re  linear_system(VectorSpace _vec);
-	//linear system
+	std::map<double, re> eigenvalueAndeigenvectorUnder3();
 
-	//eigenvaule
+
 	//power method of eigen value
 	//least square
 private:

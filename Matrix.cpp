@@ -23,7 +23,7 @@ Matrix::~Matrix()
 	name.clear();
 }
 
-Matrix::Matrix(Matrix & _matrix)
+Matrix::Matrix(const Matrix & _matrix)
 {
 	name = _matrix.name;
 
@@ -677,6 +677,18 @@ double Matrix::Rank()
 	return rank;
 
 }
+Matrix Matrix::eigenMatrix(double a)
+{
+	Matrix ans(*this);
+	for (int q = 0; q < row; q++)
+	{
+		for (int j = 0; j < row; j++)
+		{
+			ans.matrix[q][j] -= a;
+		}
+	}
+	return ans;
+}
 re Matrix::linear_system(VectorSpace _vec)
 {
 	re A;
@@ -988,6 +1000,12 @@ re Matrix::linear_system(VectorSpace _vec)
 						
 					}
 					else {
+
+						iter = coefficent.find("c");
+						if (iter == coefficent.end()) {
+							coefficent.insert(std::pair<std::string, double>("c", 0));
+						}
+
 						for (iter = coefficent.begin(); iter != coefficent.end(); iter++)
 						{
 							std::stringstream ss;
@@ -1413,6 +1431,98 @@ re Matrix::linear_system(VectorSpace _vec)
 		std::cerr << "錯誤: " << str << std::endl;
 	}
 	return re();
+}
+std::map<double, re> Matrix::eigenvalueAndeigenvectorUnder3()
+{
+
+	try
+	{
+		if (row != column)
+			throw "matrix非方陣";
+		else if (row > 3)
+			throw "請選擇powermethod方法";
+		if (row == 2) {
+			std::map<double, re>ans;
+			std::map<double, re>::iterator it;
+			VectorSpace vec(2);
+			if (((matrix[0][0] + matrix[1][1])*(matrix[0][0] + matrix[1][1]) - 4 * (matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0])) < 0)
+				throw "暫無複數處理";
+			double x1 = ((matrix[0][0] + matrix[1][1]) + sqrt((matrix[0][0] + matrix[1][1])*(matrix[0][0] + matrix[1][1]) - 4 * (matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0]))) / 2;
+			double x2 = ((matrix[0][0] + matrix[1][1]) - sqrt((matrix[0][0] + matrix[1][1])*(matrix[0][0] + matrix[1][1]) - 4 * (matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0]))) / 2;
+			Matrix tem(*this);
+			Matrix a;
+			a = tem.eigenMatrix(x1);
+			re first = a.linear_system(vec);
+			it = ans.find(x1);
+			if (it == ans.end()) {
+				ans.insert(std::pair<double, re>(x1,first));
+			}
+			a = tem.eigenMatrix(x2);
+			re two = a.linear_system(vec);
+			it = ans.find(x2);
+			if (it == ans.end()) {
+				ans.insert(std::pair<double, re>(x2,two));
+			}
+			return ans; 
+		}
+		else
+		{
+			double p1 = 1;
+			double p2 = -1*(matrix[0][0] + matrix[1][1] + matrix[2][2]);
+			double p3 =  (matrix[0][0]* matrix[2][2]+ matrix[1][1]* matrix[2][2]+ matrix[0][0] * matrix[1][1]- matrix[0][2] * matrix[2][0]- matrix[0][1] * matrix[1][0]- matrix[1][2] * matrix[2][1]);
+			double p4 = -1*(matrix[0][0] * matrix[1][1] * matrix[2][2] -
+						matrix[0][2] * matrix[1][1] * matrix[2][0] -
+						matrix[0][1] * matrix[1][0] * matrix[2][2] -
+						matrix[0][0] * matrix[1][2] * matrix[2][1]);
+			double A = p2 * p2 - 3 * p1*p3;
+			double B = p2 * p3 - 9 * p1*p4;
+			double C = p3 * p3 - 3 * p2*p4;
+			double judge = B * B - 4 * A*C;
+			if(judge>0) throw "暫無複數處理";
+			else
+			{
+				
+				double Q = (p2*p2 - 3 * p3) / 9;
+				double R = (2 * p2*p2*p2 - 9 * p3*p2 + 27 * p4) / 54;
+				double theata = RadtoAng(acos(R/sqrt(Q*Q*Q)));
+				double x1 = -2 * sqrt(Q)*cos(AngtoRad(theata / 3)) - p2 / 3;
+				double x2= -2 * sqrt(Q)*cos(AngtoRad(theata +360/ 3)) - p2 / 3;
+				double x3= -2 * sqrt(Q)*cos(AngtoRad(theata - 360 / 3)) - p2 / 3;
+				Matrix tem(*this);
+				Matrix a;
+				std::map<double, re>ans;
+				std::map<double, re>::iterator it;
+				VectorSpace vec(3);
+				a = tem.eigenMatrix(x1);
+				re first = a.linear_system(vec);
+				it = ans.find(x1);
+				if (it == ans.end()) {
+					ans.insert(std::pair<double, re>(x1, first));
+				}
+				////
+				a = tem.eigenMatrix(x2);
+				re Two = a.linear_system(vec);
+				it = ans.find(x2);
+				if (it == ans.end()) {
+					ans.insert(std::pair<double, re>(x2, first));
+				}
+				////
+				a = tem.eigenMatrix(x3);
+				re Two = a.linear_system(vec);
+				it = ans.find(x3);
+				if (it == ans.end()) {
+					ans.insert(std::pair<double, re>(x3, first));
+				}
+				return ans;
+			}
+
+
+		}
+	}
+	catch (const char* str) {
+		std::cerr << "錯誤: " << str << std::endl;
+	}
+	return std::map<double, re>();
 }
 std::ostream & operator<<(std::ostream & os, const Matrix &A)
 {

@@ -268,9 +268,24 @@ double VectorSpace::TriangleArea(VectorSpace & _vec)
 {
 	try
 	{
-		if (Vectorsize !=2 && _vec.Vectorsize !=2)
-			throw "不是二維空間";
-		return 0.5*this->Norm()*_vec.Norm()*RadtoAng(sin(this->AngleBetween(_vec)));
+		if (Vectorsize!= _vec.Vectorsize)
+			throw "空間不一樣";
+		else
+		{
+			if(Vectorsize==2)
+				return 0.5*this->Norm()*_vec.Norm()*RadtoAng(sin(this->AngleBetween(_vec)));
+			else
+			{
+				//海龍公視
+				VectorSpace a(*this);
+				VectorSpace b(*this);
+				a=a.Component(_vec);
+				double s = (a.Norm() + b.Norm() + _vec.Norm()) / 2;
+				double ans = sqrt(s*(s - a.Norm())*(s*b.Norm())*(s - _vec.Norm()));
+				return ans;
+			}
+		}
+		
 	}
 	catch (const char* str) {
 		std::cerr << "錯誤: " << str << std::endl;
