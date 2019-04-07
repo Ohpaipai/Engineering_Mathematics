@@ -22,7 +22,8 @@ public:
 	Matrix(std::string _name);
 	Matrix(std::string _name, int _row, int _column, std::vector<std::vector<double>>_matrix);
 	Matrix(std::string _name, int _row, int _column, std::vector<VectorSpace>_matrix);
-	Matrix(std::string _name, int _row, int _column, VectorSpace*_vec);
+	Matrix(int _row, int _column, VectorSpace _vec);
+	Matrix(std::string _name, int _row, int _column, VectorSpace _vec);
 	Matrix(std::string _name, int _row, int _column);
 	Matrix(int _row, int _column);
 	friend std::ostream& operator<<(std::ostream& os, const Matrix&);

@@ -77,7 +77,25 @@ Matrix::Matrix(std::string _name, int _row, int _column, std::vector<VectorSpace
 	
 }
 
-Matrix::Matrix(std::string _name, int _row, int _column, VectorSpace * _vec)
+Matrix::Matrix(int _row, int _column, VectorSpace  _vec)
+{
+	row = _row;
+	column = _column;
+	matrix.resize(row);
+	for (int i = 0; i < row; i++)
+	{
+		matrix[i].resize(column);
+	}
+
+	for (int i = 0; i < row; i++)
+	{
+		for (int j = 0; j < column; j++) {
+			matrix[i][j] = _vec[j].getNumInSpace(i);
+		}
+	}
+}
+
+Matrix::Matrix(std::string _name, int _row, int _column, VectorSpace  _vec)
 {
 	row = _row;
 	column = _column;
