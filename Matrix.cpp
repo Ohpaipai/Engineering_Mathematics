@@ -90,7 +90,7 @@ Matrix::Matrix(int _row, int _column, VectorSpace  _vec)
 	for (int i = 0; i < row; i++)
 	{
 		for (int j = 0; j < column; j++) {
-			matrix[i][j] = _vec[j].getNumInSpace(i);
+			matrix[i][j] = _vec.getNumInSpace(i);
 		}
 	}
 }
@@ -109,7 +109,7 @@ Matrix::Matrix(std::string _name, int _row, int _column, VectorSpace  _vec)
 	for (int i = 0; i < row; i++)
 	{
 		for (int j = 0; j < column; j++) {
-			matrix[i][j] =_vec[j].getNumInSpace(i);
+			matrix[i][j] =_vec.getNumInSpace(i);
 		}
 	}
 }
@@ -1522,14 +1522,14 @@ std::map<double, re> Matrix::eigenvalueAndeigenvectorUnder3()
 				re Two = a.linear_system(vec);
 				it = ans.find(x2);
 				if (it == ans.end()) {
-					ans.insert(std::pair<double, re>(x2, first));
+					ans.insert(std::pair<double, re>(x2, Two));
 				}
 				////
 				a = tem.eigenMatrix(x3);
-				re Two = a.linear_system(vec);
+				re Two2 = a.linear_system(vec);
 				it = ans.find(x3);
 				if (it == ans.end()) {
-					ans.insert(std::pair<double, re>(x3, first));
+					ans.insert(std::pair<double, re>(x3, Two2));
 				}
 				return ans;
 			}
@@ -1657,7 +1657,9 @@ bool Linear_independent(std::vector<VectorSpace> _vec)
 
 bool Linear_independent(int howmany,VectorSpace *_vec)
 {
-	Matrix tem("tem", _vec[0].getvectorsize(), howmany, _vec);
+	std::string nm = "name";
+	int m = _vec[0].getvectorsize();
+	Matrix tem(m, howmany, *_vec);
 	//cout << tem;
 	int nowColumn = 0;
 	double mult = 0;

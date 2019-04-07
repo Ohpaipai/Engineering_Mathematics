@@ -32,11 +32,11 @@ public:
 	VectorSpace operator +(const VectorSpace& _vec);
 	VectorSpace operator =(const VectorSpace& _vec);
 	VectorSpace operator -(const VectorSpace& _vec);
-	double operator *(const VectorSpace& _vec);
+double operator *(const VectorSpace& _vec); //¤º¿n
 	VectorSpace operator /(const double& _Scalar);
 	VectorSpace operator *(const double& _Scalar);
 	VectorSpace operator ^(const VectorSpace& _vec);
-	double Norm();
+double Norm();
 	VectorSpace Normalization();
 	double AngleBetween(VectorSpace& _vec);
 	double TriangleArea(VectorSpace& _vec);
