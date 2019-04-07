@@ -26,6 +26,7 @@ public:
 	Matrix(std::string _name, int _row, int _column, VectorSpace _vec);
 	Matrix(std::string _name, int _row, int _column);
 	Matrix(int _row, int _column);
+	Matrix(int _row, int _column,int n);
 	friend std::ostream& operator<<(std::ostream& os, const Matrix&);
 	void addRow(double *a,int _size);
 	void addRow(std::vector<double> _tem, int _size);
@@ -55,11 +56,13 @@ public:
 	Matrix eigenMatrix(double);
 	re  linear_system(VectorSpace _vec);
 	std::map<double, re> eigenvalueAndeigenvectorUnder3();
-
+	std::map<double, re> powerMethod();
 
 	//power method of eigen value
 	//least square
 private:
+	bool juge(Matrix b);
+
 	std::vector<std::vector<double>>matrix;
 	int row;
 	int column;

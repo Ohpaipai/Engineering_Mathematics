@@ -19,6 +19,8 @@ public:
 	VectorSpace(std::string _name, int _size, double *a);
 	VectorSpace(std::string _name, int _size, std::vector<double>_vec);
 	VectorSpace(std::string _name);
+	VectorSpace(std::string _name, double a); 
+	
 	VectorSpace(std::string _name,int _size);
 	VectorSpace(int _size);
 	void addNumInSpace(double _num);
@@ -35,12 +37,12 @@ public:
 double operator *(const VectorSpace& _vec); //¤º¿n
 	VectorSpace operator /(const double& _Scalar);
 	VectorSpace operator *(const double& _Scalar);
-	VectorSpace operator ^(const VectorSpace& _vec);
+	VectorSpace operator ^(VectorSpace& _vec);
 double Norm();
 	VectorSpace Normalization();
 	double AngleBetween(VectorSpace& _vec);
 	double TriangleArea(VectorSpace& _vec);
-	VectorSpace Component(VectorSpace& _vec);
+	double Component(VectorSpace& _vec);
 	VectorSpace Projection(VectorSpace& _vec);
 	bool Parallel(VectorSpace &_vec);
 	bool Orthohonal(VectorSpace&_vec);

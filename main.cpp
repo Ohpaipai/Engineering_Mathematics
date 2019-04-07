@@ -6,7 +6,7 @@ int main() {
 	double a[5] = { 1,2,3,4,5 };
 	double b[3] = { 1,2,3 };
 	double c[3] = { 2,4,6 };
-	double aa[3][3] = { {7,7,9},{8,8,5},{5,78,3} };
+	double aa[2][2] = { {4,2},{3,-1} };
 	double ab[3][4] = { {1, 2, 3, 3}, { 2,1,0,6 }, { 2,7,4,5 } };
 	//{3,0,2,2},{-6,42,24,54},{21,-21,0,-15}
 	//{1, 0, 0, 0}, { 0,1,0,0 }, { 0,0,0,1 }
@@ -23,16 +23,17 @@ int main() {
 	std::vector<VectorSpace>f;
 	f.push_back(x1);
 	f.push_back(x2);
-	f.push_back(x3);
-	Matrix m6("d", 3, 3, f);
+	
+	Matrix m6("d", 3, 2, f);
+//	std::cout << m6;
 	//m6.Rank();
 	//cout << m6;
 	std::vector<std::vector<double>>t;
-	t.resize(3);
-	for (int i = 0; i < 3; i++)
+	t.resize(2);
+	for (int i = 0; i < 2; i++)
 	{
-		t[i].resize(3);
-		for (int j = 0; j < 3; j++)
+		t[i].resize(2);
+		for (int j = 0; j < 2; j++)
 		{
 			t[i][j]=aa[i][j];
 		}
@@ -48,11 +49,18 @@ int main() {
 		}
 	}
 	std::string name = "d";
-	Matrix m1(name,3, 3,t);	
+	Matrix m1(name,2, 2,t);	
 	//cout << m1.Rank() << endl;
-	re ans = m1.linear_system(x4);
-	if (ans.up) std::cout << ans.A << std::endl;
-	else std::cout << ans.B;
+	std::map<double, re>an;
+	std::map<double, re>::iterator it;
+	an = m1.powerMethod();
+	for (it=an.begin();it!=an.end();it++)
+	{
+		std::cout << it->first << std::endl;
+		if (it->second.up) std::cout << it->second.A << std::endl;
+		else std::cout << it->second.B;
+	}
+	
 //	Matrix m2(name, 3, 4, tt);
 	//cout << Linear_independent(f) << endl;
 	//cout << m1.Inverse() << endl;

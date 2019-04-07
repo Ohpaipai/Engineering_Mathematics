@@ -42,6 +42,15 @@ VectorSpace::VectorSpace(std::string _name)
 	name = _name;
 }
 
+VectorSpace::VectorSpace(std::string _name, double a)
+{
+	name = _name;
+	Vectorsize = 1;
+	vec.push_back(a);
+}
+
+
+
 VectorSpace::VectorSpace(std::string _name, int _size)
 {
 	//use try catch
@@ -206,11 +215,11 @@ VectorSpace VectorSpace::operator*(const double & _Scalar)
 	return ans;
 }
 
-VectorSpace VectorSpace::operator^(const VectorSpace & _vec)
+VectorSpace VectorSpace::operator^( VectorSpace & _vec)
 {
 	try
 	{
-		if (Vectorsize!=3&&_vec.Vectorsize!=3)
+		if (Vectorsize>3&&_vec.Vectorsize>3)
 			throw "超過三維空間";
 		VectorSpace ans;
 		ans.Vectorsize = Vectorsize;
@@ -279,9 +288,12 @@ double VectorSpace::TriangleArea(VectorSpace & _vec)
 				//海龍公視
 				VectorSpace a(*this);
 				VectorSpace b(*this);
-				a=a.Component(_vec);
+				for (int i = 0; i <Vectorsize; i++)
+				{
+					a.vec[i] = b.vec[i] - _vec.vec[i];
+				}
 				double s = (a.Norm() + b.Norm() + _vec.Norm()) / 2;
-				double ans = sqrt(s*(s - a.Norm())*(s*b.Norm())*(s - _vec.Norm()));
+				double ans = sqrt(s*(s - a.Norm())*(s-b.Norm())*(s - _vec.Norm()));
 				return ans;
 			}
 		}
@@ -294,24 +306,22 @@ double VectorSpace::TriangleArea(VectorSpace & _vec)
 	
 }
 
-VectorSpace VectorSpace::Component(VectorSpace & _vec)
+double VectorSpace::Component(VectorSpace & _vec)
 {
 	try
 	{
 		if (Vectorsize != _vec.Vectorsize)
 			throw "size不一樣";
-		VectorSpace ans;
-		ans.Vectorsize = Vectorsize;
-		for (int i = 0; i < Vectorsize; i++)
-		{
-			ans.vec.push_back((_vec.vec[i]-vec[i]));
-		}
+		VectorSpace tem(*this);
+		double ans = ( tem * _vec);
+		ans = ans / _vec.Norm();
+		
 		return ans;
 	}
 	catch (const char* str) {
 		std::cerr << "錯誤: " << str << std::endl;
 	}
-	return VectorSpace();
+	return 0;
 }
 
 VectorSpace VectorSpace::Projection(VectorSpace & _vec)
@@ -320,13 +330,12 @@ VectorSpace VectorSpace::Projection(VectorSpace & _vec)
 	{
 		if (Vectorsize != _vec.Vectorsize)
 			throw "size不一樣";
-		VectorSpace ans;
-		ans.Vectorsize = Vectorsize;
-		double denominator = ((*this*_vec) / _vec.Norm());
-		for (int i = 0; i < Vectorsize; i++)
-		{
-			ans.vec.push_back(_vec.vec[i]*denominator);
-		}
+		VectorSpace tem(*this);
+		VectorSpace ans(*this);
+		double an = tem * _vec;
+		an = an / _vec.Norm();
+		ans = _vec.Normalization();
+		ans = ans * an;
 		return ans;
 	}
 	catch (const char* str) {
@@ -342,19 +351,18 @@ bool VectorSpace::Parallel(VectorSpace & _vec)
 		if (Vectorsize != _vec.Vectorsize)
 			throw "size不一樣";
 		
-	/*	for (int i = 1; i < Vectorsize; i++)
-		{
-			if (vec[i - 1] / _vec.vec[i - 1] != vec[i] / _vec.vec[i])
-			{
-				ans = false;
-				break;
-			}
-		}*/
+
 		VectorSpace A(*this),B(_vec);
 		double p = A.Normalization()*B.Normalization();
 		if (p == 1 || p == (-1))
 			return true;
-		else return false;
+		else
+		{
+			if(1-std::abs(p)<=0.000001||std::abs(p)-1<=0.000001)
+				return true;
+			else
+				return false;
+		}
 		
 	}
 	catch (const char* str) {
