@@ -252,14 +252,24 @@ double VectorSpace::Norm()
 
 VectorSpace VectorSpace::Normalization()
 {
-	double denomainater = this->Norm();
-	VectorSpace ans;
-	ans.Vectorsize = Vectorsize;
-	for (int i = 0; i < Vectorsize; i++)
+	try
 	{
-		ans.vec.push_back(vec[i] / denomainater);
+		double denomainater = this->Norm();
+		if (denomainater == 0)
+			throw"0向量";
+		VectorSpace ans;
+		ans.Vectorsize = Vectorsize;
+		for (int i = 0; i < Vectorsize; i++)
+		{
+			ans.vec.push_back(vec[i] / denomainater);
+		}
+		return ans;
 	}
-	return ans;
+	catch (const char* str) {
+		std::cerr << "錯誤: " << str << std::endl;
+	}
+	return VectorSpace();
+
 }
 
 double VectorSpace::AngleBetween(VectorSpace & _vec)
@@ -267,9 +277,20 @@ double VectorSpace::AngleBetween(VectorSpace & _vec)
 
 	try
 	{
-		if (Vectorsize > 3 && _vec.Vectorsize > 3)
-			throw "超過三維空間";
-		return RadtoAng(acos((*this*_vec) / (_vec.Norm()*this->Norm())));
+		VectorSpace tem(*this);
+		if (Vectorsize !=_vec.Vectorsize)
+			throw "不同空間";
+		else if (_vec.Norm() == 0 || tem.Norm() == 0)
+		{
+			throw "有0向量";
+		}
+		/*else if (1 - std::abs(_vec.Norm()) <= 0.000001 || std::abs(_vec.Norm()) - 1 <= 0.000001 || 1 - std::abs(tem.Norm()) <= 0.000001 || std::abs(tem.Norm()) - 1 <= 0.000001)
+		{
+			throw "有0向量";
+		}*/
+		double ans = acos((tem*_vec) / (_vec.Norm()*tem.Norm()));
+		//std::cout <<ans << std::endl;
+		return RadtoAng(ans);
 	}
 	catch (const char* str) {
 		std::cerr << "錯誤: " << str << std::endl;
@@ -284,6 +305,10 @@ double VectorSpace::TriangleArea(VectorSpace & _vec)
 	{
 		if (Vectorsize!= _vec.Vectorsize)
 			throw "空間不一樣";
+		else if (this->Norm()==0||_vec.Norm()==0)
+		{
+			throw "0向量";
+		}
 		else
 		{
 			if(Vectorsize==2)
@@ -318,6 +343,8 @@ double VectorSpace::Component(VectorSpace & _vec)
 		if (Vectorsize != _vec.Vectorsize)
 			throw "size不一樣";
 		VectorSpace tem(*this);
+		if(_vec.Norm()==0) 
+			throw "0向量";
 		double ans = ( tem * _vec);
 		ans = ans / _vec.Norm();
 		
@@ -335,6 +362,8 @@ VectorSpace VectorSpace::Projection(VectorSpace & _vec)
 	{
 		if (Vectorsize != _vec.Vectorsize)
 			throw "size不一樣";
+		if (_vec.Norm() == 0)
+			throw "0向量";
 		VectorSpace tem(*this);
 		VectorSpace ans(*this);
 		double an = tem * _vec;
@@ -356,9 +385,12 @@ bool VectorSpace::Parallel(VectorSpace & _vec)
 		if (Vectorsize != _vec.Vectorsize)
 			throw "size不一樣";
 		
-
+		
 		VectorSpace A(*this),B(_vec);
 		double p = A.Normalization()*B.Normalization();
+		//std::cout << A << B;
+
+		if (p == 0) return false;
 		if (p == 1 || p == (-1))
 			return true;
 		else
@@ -457,9 +489,9 @@ std::ostream & operator<<(std::ostream & os, const VectorSpace & _vec)
 	for (int i = 0; i <_vec.Vectorsize; i++)
 	{
 		if(i==0)
-			os << " "<< std::setw(6) << _vec.vec[i]  ;
+			os << " "<< std::setw(10) <<std::fixed<<std::setprecision(6)<< _vec.vec[i]  ;
 		else
-			os << "," << std::setw(6) << _vec.vec[i];
+			os << "," << std::setw(10) << std::fixed << std::setprecision(6) << _vec.vec[i];
 			
 	}
 	os << " }" << std::endl;

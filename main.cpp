@@ -1,7 +1,8 @@
 
 #include"VectorAndMatrix.h"
+#include<fstream>
 int main() {
-	double a[2] = {1,1};
+	/*double a[2] = {1,1};
 	double a1[2] = { 2,3 };
 	double a2[2] = { 3,4 };
 	double a3[2] = { 4,6 };
@@ -17,7 +18,35 @@ int main() {
 	vv.push_back(v2);
 	vv.push_back(v3);
 	vv.push_back(v4);
-	std::cout << leastSquare(vv) << std::endl;
+	std::cout << leastSquare(vv) << std::endl;*/
+	int aq = 50;
+	std::fstream file1;
+	file1.open("v1.txt", std::ios::in);
+	std::fstream file2;
+	file2.open("v2.txt", std::ios::in);
+	double *a=new double[aq];
+	double *b = new double[aq];
+	for (int i = 0; i < aq; i++)
+	{
+		file1 >> a[i];
+		file2>> b[i];
+		//std::cout << a[i] << "  " << b[i] << std::endl;
+	}
+	VectorSpace v0("nam", aq, a);
+	VectorSpace v1("nam", aq, b);
+	//std::cout << v0 << v1;
+
+	std::cout << v0.AngleBetween(v1)<< std::endl;
+	//std::cout << v0.Parallel(v1) << std::endl;
+
+
+
+
+
+
+
+
+
 
 //	double a[5] = { 1,2,3,4,5 };
 //	double b[3] = { 1,2,3 };
