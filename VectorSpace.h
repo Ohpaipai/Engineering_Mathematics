@@ -20,7 +20,7 @@ public:
 	VectorSpace(std::string _name, int _size, std::vector<double>_vec);
 	VectorSpace(std::string _name);
 	VectorSpace(std::string _name, double a); 
-	
+	void changename(std::string _name);
 	VectorSpace(std::string _name,int _size);
 	VectorSpace(int _size);
 	void addNumInSpace(double _num);

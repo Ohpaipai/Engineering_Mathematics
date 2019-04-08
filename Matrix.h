@@ -27,6 +27,7 @@ public:
 	Matrix(std::string _name, int _row, int _column);
 	Matrix(int _row, int _column);
 	Matrix(int _row, int _column,int n);
+	void changename(std::string _name);
 	friend std::ostream& operator<<(std::ostream& os, const Matrix&);
 	void addRow(double *a,int _size);
 	void addRow(std::vector<double> _tem, int _size);
@@ -74,3 +75,4 @@ private:
 bool Linear_independent(std::vector<VectorSpace> _vec);
 bool Linear_independent(int howmany,VectorSpace *_vec);
 std::string leastSquare(std::vector<VectorSpace> _vec);
+std::string leastSquare(int howmany, VectorSpace *_vec);

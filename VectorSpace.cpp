@@ -49,6 +49,11 @@ VectorSpace::VectorSpace(std::string _name, double a)
 	vec.push_back(a);
 }
 
+void VectorSpace::changename(std::string _name)
+{
+	name = _name;
+}
+
 
 
 VectorSpace::VectorSpace(std::string _name, int _size)

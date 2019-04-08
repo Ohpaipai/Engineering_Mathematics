@@ -71,7 +71,7 @@ Matrix::Matrix(std::string _name, int _row, int _column, std::vector<VectorSpace
 	for (int i = 0; i <row; i++)
 	{
 		for (int j = 0; j <column; j++) {
-			matrix[i][j] = _matrix[j].getNumInSpace(i);
+			matrix[i][j] = _matrix[i].getNumInSpace(j);
 		}
 	}
 	
@@ -158,6 +158,11 @@ Matrix::Matrix(int _row, int _column, int n)
 			matrix[i][j] = n;
 		}
 	}
+}
+
+void Matrix::changename(std::string _name)
+{
+	name = _name;
 }
 
 void Matrix::addRow(double * a, int _size)
@@ -559,6 +564,9 @@ Matrix Matrix::adjoint()
 		int NegatineOrPositive = 1;
 		for (int i = 0; i < this->column; i++)
 		{
+			if (i % 2 == 0)  NegatineOrPositive = 1;
+			else  NegatineOrPositive = 0;
+			
 			for (int j = 0; j < this->column; j++)
 			{
 				Matrix tempmt;
@@ -597,6 +605,7 @@ Matrix Matrix::adjoint()
 			}
 
 		}
+		//std::cout << ans;
 		ans = ans.Transpose();
 		return ans;
 	}
@@ -614,8 +623,10 @@ Matrix Matrix::Inverse()
 			throw "matrix非方陣";
 		else if(this->determinants()==0)
 			throw "matrix無可逆矩陣";
-		Matrix ans;
-		ans = this->adjoint();
+		Matrix ans(*this);
+		//std::cout << ans;
+		ans = ans.adjoint();
+		//std::cout << ans;
 		double denomainater = this->determinants();
 		if (denomainater == 0) return ans;
 		else {
@@ -1773,7 +1784,7 @@ std::ostream & operator<<(std::ostream & os, const Matrix &A)
 
 bool Linear_independent(std::vector<VectorSpace> _vec)
 {
-	Matrix tem("tem",_vec[0].getvectorsize(),_vec.size(),_vec);
+	Matrix tem("tem", _vec.size(), _vec[0].getvectorsize(), _vec);
 	//cout << tem;
 	int nowColumn = 0;
 	double mult = 0;
@@ -1873,7 +1884,7 @@ bool Linear_independent(int howmany,VectorSpace *_vec)
 {
 	std::string nm = "name";
 	int m = _vec[0].getvectorsize();
-	Matrix tem(m, howmany, *_vec);
+	Matrix tem(howmany, m, *_vec);
 	//cout << tem;
 	int nowColumn = 0;
 	double mult = 0;
@@ -1971,5 +1982,100 @@ bool Linear_independent(int howmany,VectorSpace *_vec)
 
 std::string leastSquare(std::vector<VectorSpace> _vec)
 {
-	return std::string();
+	//X  = (A^(T)A)^(-1)A^(T)Y 
+	Matrix tem("tem", _vec.size(), _vec[0].getvectorsize(), _vec);
+	//std::cout << tem;
+	
+	Matrix fx(tem.getRow(),1);
+
+	//std::cout << fx;
+	for (int i = 0; i < tem.getRow(); i++)
+	{
+		fx.replaceNuminMatrix(i,0, tem.getnuminMatrix(i,tem.getcolumn()-1));
+		tem.replaceNuminMatrix(i, tem.getcolumn() - 1,1);
+	}
+	//std::cout << tem;
+	//std::cout << fx;
+	Matrix temT = tem.Transpose();
+	
+	Matrix T = temT * tem;
+	//std::cout << T;
+	T = T.Inverse();
+	//std::cout << T;
+	//std::cout << temT;
+	Matrix X = T * temT;
+	//std::cout << X;
+	//std::cout << fx;
+	X = X * fx;
+	//std::cout << X;
+	std::string ans = "y = ";
+	for (int i = 0; i <X.getRow(); i++)
+	{
+		std::stringstream ss;
+		std::string record;
+		ss<< X.getnuminMatrix(i, 0);
+		ss >> record;
+		ss.clear();
+		ss.str("");
+		ans += record;
+		if (i + 1 != X.getRow())
+		{
+			ss << (i + 1);
+			ss >> record;
+			ans += 'x';
+			ans += record;
+			ans += " + ";
+		}
+	}
+	return ans;
+}
+
+std::string leastSquare(int howmany, VectorSpace * _vec)
+{
+	//X  = (A^(T)A)^(-1)A^(T)Y 
+	Matrix tem(howmany,_vec[0].getvectorsize() , *_vec);
+	//std::cout << tem;
+
+	Matrix fx(tem.getRow(), 1);
+
+	//std::cout << fx;
+	for (int i = 0; i < tem.getRow(); i++)
+	{
+		fx.replaceNuminMatrix(i, 0, tem.getnuminMatrix(i, tem.getcolumn() - 1));
+		tem.replaceNuminMatrix(i, tem.getcolumn() - 1, 1);
+	}
+	//std::cout << tem;
+	//std::cout << fx;
+	Matrix temT = tem.Transpose();
+
+	Matrix T = temT * tem;
+	//std::cout << T;
+	T = T.Inverse();
+	//std::cout << T;
+	//std::cout << temT;
+	Matrix X = T * temT;
+	//std::cout << X;
+	//std::cout << fx;
+	X = X * fx;
+	//std::cout << X;
+	std::string ans = "y = ";
+	for (int i = 0; i < X.getRow(); i++)
+	{
+		std::stringstream ss;
+		std::string record;
+		ss << X.getnuminMatrix(i, 0);
+		ss >> record;
+		ss.clear();
+		ss.str("");
+		ans += record;
+		if (i + 1 != X.getRow())
+		{
+			ss << (i + 1);
+			ss >> record;
+			ans += 'x';
+			ans += record;
+			ans += " + ";
+		}
+	}
+	return ans;
 }
