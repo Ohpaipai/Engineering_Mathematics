@@ -57,8 +57,8 @@ public:
 	re  linear_system(VectorSpace _vec);
 	std::map<double, re> eigenvalueAndeigenvectorUnder3();
 	std::map<double, re> powerMethod();
-
-	//power method of eigen value
+	
+	
 	//least square
 private:
 	bool juge(Matrix b);
@@ -73,3 +73,4 @@ private:
 
 bool Linear_independent(std::vector<VectorSpace> _vec);
 bool Linear_independent(int howmany,VectorSpace *_vec);
+std::string leastSquare(std::vector<VectorSpace> _vec);

@@ -716,14 +716,14 @@ double Matrix::Rank()
 Matrix Matrix::eigenMatrix(double a)
 {
 	Matrix ans(*this);
-	std::cout <<"第一"<< ans;
+	//std::cout <<"第一"<< ans;
 	for (int q = 0; q < row; q++)
 	{
 		
 			ans.matrix[q][q] -= a;
 		
 	}
-	std::cout << ans;
+	//std::cout << ans;
 	return ans;
 }
 re Matrix::linear_system(VectorSpace _vec)
@@ -736,16 +736,18 @@ re Matrix::linear_system(VectorSpace _vec)
 	
 		Matrix tem(*this);
 		std::cout << tem;
-		std::string *variance = new std::string[tem.column];
+		//std::string *variance = new std::string[tem.column];
+		bool *variance = new bool[tem.column];
 		double *variancenum = new double[tem.column];
 		for (int i = 0; i < tem.column; i++)
 		{
-			variancenum[i] = 0;
+			variancenum[i] = 1;
 			std::stringstream ss;
 			ss << (i + 1);
 			std::string t;
 			ss >> t;
-			variance[i] = "x"+t;
+			//variance[i] = "x"+t;
+			variance[i] = false;
 			//cout << variance[i] << endl;
 		}
 		tem.column += 1;
@@ -757,6 +759,7 @@ re Matrix::linear_system(VectorSpace _vec)
 		double mult = 0;
 		for (int _row = 0; _row < tem.row; _row++)
 		{
+			//std::cout << "test\n" << tem;
 			//std::cout << tem;
 			//cout << _row << "   " << endl << tem;
 			if (tem.matrix[_row][nowColumn] != 0)
@@ -769,6 +772,10 @@ re Matrix::linear_system(VectorSpace _vec)
 						for (int i = nowColumn; i < tem.column; i++)
 						{
 							tem.matrix[_column][i] -= mult * tem.matrix[_row][i];
+							/*if (tem.matrix[_column][i] < 0.000001)
+							{
+								tem.matrix[_column][i] = 0;
+							}*/
 
 						}
 						//cout << mult << "  " << endl << tem;
@@ -808,15 +815,25 @@ re Matrix::linear_system(VectorSpace _vec)
 		}
 
 
-
-
+	/*	
+		for (int i = 0; i < tem.row; i++)
+		{
+			for (int j = 0; j < tem.column; j++)
+			{
+				if (tem.matrix[i][j] <= 0.000001)
+				{
+					tem.matrix[i][j] = 0;
+				}
+			}
+		}
+*/
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////
 
 
 
-		std::cout << tem;
+		//std::cout <<"test\n" <<tem;
 		VectorSpace temvec(row);
 		for (int i = 0; i < row; i++)
 		{
@@ -829,23 +846,99 @@ re Matrix::linear_system(VectorSpace _vec)
 		//std::cout << tem << std::endl;
 		re ans;
 
-		ans.up = true;
+		ans.up = false;
 
-				std::string phrase="";
-				std::map<std::string, double> coefficent;
-				std::map<std::string, double>::iterator iter;
-				std::string text = "";
-				for (int i = tem.row - 1; i >= 0; i--)
+			//判斷是否有0列
+		int R = row-1;
+		int C = column-1;
+		bool noans = false;
+		for (int i = 0; i < row; i++)
+		{
+			bool allzero = true;
+			for (int j = 0; j < column; j++)
+			{
+				if (tem.matrix[i][j] != 0)
 				{
-					for (int j = tem.column - 1; j > i; j--)//處理問題
+					if (std::abs(tem.matrix[i][i]) <= 0.000011)
 					{
-						std::stringstream ss;
-						for (int k = 0; k < variance[j].size(); k++)
-						{
 
+					}
+					else {
+						allzero = false;
+						break;
+					}
+
+				}
+			}
+			if (allzero)
+			{
+				if (temvec.getNumInSpace(i) != 0) //00000->2
+				{
+					ans.up = true;
+					ans.A = "無解";
+					throw"無解";
+				}
+				else
+				{
+					R--;
+					if (tem.column == tem.row)//方陣
+					{
+						variance[i] = true;
+						variancenum[i] = 1;
+					}
+					else if (tem.column > tem.row)
+					{
+						for (int k = i+1; k <column; k++)
+						{
+							variance[k] = true;
+							variancenum[k] = 1;
 						}
 					}
+					else {
+						variance[i] = true;
+						variancenum[i] = 1;
+					}
 				}
+			}
+
+		}
+		//做linearsystem
+		for (int i = R; i>=0; i--)
+		{
+		
+			double mother = tem.matrix[i][i];
+			double kid = temvec.getNumInSpace(i);
+			for (int j = i+1; j <=C; j++)
+			{
+				kid -= variancenum[j] * tem.matrix[i][j];
+			}
+			if (variance[i])
+			{
+				if (variancenum[i] != (kid / mother))
+				{
+					ans.up = true;
+					noans = true;
+					ans.A = "無解";
+					throw "無解";
+				}
+			}
+			else {
+				variance[i] = true;
+				variancenum[i] = (kid / mother);
+			}
+		}
+		
+		if (!noans)
+		{
+			for (int i = 0; i < column; i++)
+			{
+				ans.B.addNumInSpace(variancenum[i]);
+			}
+			
+		}
+		else {
+			throw "無解";
+		}
 
 #pragma region 原版
 		//if (tem.column == tem.row) //是否為方陣
@@ -1600,7 +1693,7 @@ std::map<double, re> Matrix::powerMethod()
 		Matrix X2 = t*X;
 		while (!(X2.juge(X)))
 		{
-			std::cout << "dasdasd\n" << X;
+			//std::cout << "dasdasd\n" << X;
 			X = X2;
 			X2 = t*X2;
 	
@@ -1635,8 +1728,8 @@ bool Matrix::juge(Matrix b)
 {
 	Matrix tem(*this);
 	Matrix tem2(b);
-	std::cout << "tem\n" << tem;
-	std::cout << "tem2\n" << tem2;
+	//std::cout << "tem\n" << tem;
+	//std::cout << "tem2\n" << tem2;
 	for (int i = 0; i < column; i++)
 	{
 		double as = tem.getnuminMatrix(0, i);
@@ -1874,4 +1967,9 @@ bool Linear_independent(int howmany,VectorSpace *_vec)
 	}
 	//cout << tem;
 	return ans;
+}
+
+std::string leastSquare(std::vector<VectorSpace> _vec)
+{
+	return std::string();
 }
