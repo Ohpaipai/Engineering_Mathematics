@@ -41,7 +41,7 @@ Matrix::Matrix(std::string _name)
 }
 
 
-Matrix::Matrix(std::string _name, int _row, int _column, std::vector<std::vector<double>> _matrix)
+Matrix::Matrix(std::string _name, int _row, int _column, std::vector<std::vector<long double>> _matrix)
 {
 	row = _row;
 	column = _column;
@@ -165,13 +165,13 @@ void Matrix::changename(std::string _name)
 	name = _name;
 }
 
-void Matrix::addRow(double * a, int _size)
+void Matrix::addRow(long double * a, int _size)
 {
 	try
 	{
 		if (_size != column)
 			throw "column不一樣";
-		std::vector<double>tem;
+		std::vector<long double>tem;
 		for (int i = 0; i <_size; i++)
 		{
 			tem.push_back(a[i]);
@@ -186,7 +186,7 @@ void Matrix::addRow(double * a, int _size)
 	
 }
 
-void Matrix::addRow(std::vector<double> _tem, int _size)
+void Matrix::addRow(std::vector<long double> _tem, int _size)
 {
 	try
 	{
@@ -206,7 +206,7 @@ void Matrix::addRow(VectorSpace _tem, int _size)
 	{
 		if (_size != column)
 			throw "column不一樣";
-		std::vector<double>tem;
+		std::vector<long double>tem;
 		for (int i = 0; i < _size; i++)
 		{
 			tem.push_back(_tem.getNumInSpace(i));
@@ -219,7 +219,7 @@ void Matrix::addRow(VectorSpace _tem, int _size)
 	}
 
 }
-void Matrix::addColumn(double * a, int _size)
+void Matrix::addColumn(long double * a, int _size)
 {
 	try
 	{
@@ -236,7 +236,7 @@ void Matrix::addColumn(double * a, int _size)
 		std::cerr << "錯誤: " << str << std::endl;
 	}
 }
-void Matrix::addColumn(std::vector<double> _tem, int _size)
+void Matrix::addColumn(std::vector<long double> _tem, int _size)
 {
 	try
 	{
@@ -270,17 +270,17 @@ void Matrix::addColumn(VectorSpace _tem, int _size)
 		std::cerr << "錯誤: " << str << std::endl;
 	}
 }
-void Matrix::replaceNuminMatrix(int row, int column, double _num)
+void Matrix::replaceNuminMatrix(int row, int column, long double _num)
 {
 	matrix[row][column] = _num;
 }
-double Matrix::getnuminMatrix(int _row, int _column)
+long double Matrix::getnuminMatrix(int _row, int _column)
 {
 	return matrix[_row][_column];
 }
 void Matrix::deleterow(int _row)
 {
-	std::vector <std::vector<double>>tem;
+	std::vector <std::vector<long double>>tem;
 	for (int i = 0; i < row; i++)
 	{
 		if (i == _row) {}
@@ -291,10 +291,10 @@ void Matrix::deleterow(int _row)
 }
 void Matrix::deletecolumn(int _column)
 {
-	std::vector <std::vector<double>>tem;
+	std::vector <std::vector<long double>>tem;
 	for (int i = 0; i < row; i++)
 	{
-		std::vector<double>t;
+		std::vector<long double>t;
 		for (int j = 0; j < column; j++)
 		{
 			if (j == _column) {}
@@ -384,7 +384,7 @@ Matrix Matrix::operator*(const Matrix & _matrix)
 	}
 	//return *this ;
 }
-Matrix Matrix::operator*(const double & _Scalar)
+Matrix Matrix::operator*(const long double & _Scalar)
 {
 	for (int i = 0; i < row; i++)
 	{
@@ -395,7 +395,7 @@ Matrix Matrix::operator*(const double & _Scalar)
 	}
 	return *this;
 }
-Matrix Matrix::operator/(const double & _Scalar)
+Matrix Matrix::operator/(const long double & _Scalar)
 {
 	try
 	{
@@ -423,7 +423,7 @@ Matrix Matrix::operator=(const Matrix & _matrix)
 	matrix = _matrix.matrix;
 	return *this;
 }
-Matrix Matrix::operator^(const double & _Scalar)
+Matrix Matrix::operator^(const long double & _Scalar)
 {
 	try
 	{
@@ -470,7 +470,7 @@ Matrix Matrix::Transpose()
 	//cout << "-----------------" << endl;
 	for (int i = 0; i < column; i++)
 	{
-		std::vector<double>tem;
+		std::vector<long double>tem;
 		for (int j = 0; j < row; j++)
 		{
 			tem.push_back(this->matrix[j][i]);
@@ -485,7 +485,7 @@ Matrix Matrix::Transpose()
 	return  ans;
 
 }
-double Matrix::determinants()
+long double Matrix::determinants()
 {
 	try
 	{
@@ -495,9 +495,9 @@ double Matrix::determinants()
 		if (tem.column == tem.row) {
 			if (row == 1) return matrix[0][0];
 			if (row == 2) return matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0];
-			double Max_row, Max_column;//maxrow為最大數字的column值 column為最大排
-			double tmp;     //交換用
-			double sw;   //存中間值
+			long double Max_row, Max_column;//maxrow為最大數字的column值 column為最大排
+			long double tmp;     //交換用
+			long double sw;   //存中間值
 			int sign = 0;//看變號
 			int i = 0, j = 0, k = 0;
 
@@ -537,7 +537,7 @@ double Matrix::determinants()
 				//cout<<"next"<<endl;
 			}
 			//cout << tem << endl;
-			double ans = 1;
+			long double ans = 1;
 
 			for (i = 0; i < this->column; i++)
 
@@ -572,7 +572,7 @@ Matrix Matrix::adjoint()
 				Matrix tempmt;
 				for (int y = 0; y < row; y++)
 				{
-					std::vector<double>t;
+					std::vector<long double>t;
 					for (int x = 0; x < column; x++)
 					{
 						if (y == i || x == j) {
@@ -627,7 +627,7 @@ Matrix Matrix::Inverse()
 		//std::cout << ans;
 		ans = ans.adjoint();
 		//std::cout << ans;
-		double denomainater = this->determinants();
+		long double denomainater = this->determinants();
 		if (denomainater == 0) return ans;
 		else {
 			for (int i = 0; i < row; i++)
@@ -645,77 +645,33 @@ Matrix Matrix::Inverse()
 	}
 	//return *this ;
 }
-double Matrix::Rank()
+long double Matrix::Rank()
 {
 
 	Matrix tem(*this);
-	int nowColumn = 0;
-	double mult = 0;
-	for (int _row = 0; _row < tem.row; _row++)
-	{
-		//cout << _row << "   " << endl << tem;
-		if (tem.matrix[_row][nowColumn] != 0)
-		{
-			for (int _column =nowColumn; _column < tem.row; _column++)
-			{
-				if (_column != _row) {
-					mult = tem.matrix[_column][_row] / tem.matrix[_row][nowColumn];
-					
-					for (int i = nowColumn; i < tem.column; i++)
-					{
-						tem.matrix[_column][i] -= mult *tem.matrix[_row][i];
-						
-					}
-					//cout << mult << "  " << endl << tem;
-				}
-			}
-			nowColumn++;
-		}
-		else
-		{
-			if (_row == tem.row - 1) break;
-			bool allzero = true;
-			bool istriangle=false;
-			for (int _column = _row+1; _column < tem.row; _column++)
-			{
-				if (_column==tem.row - 1) {
-					if (tem.matrix[_column][_row] == 0)
-					{
-						istriangle = true;
-					}
-				}
-				if (tem.matrix[_column][_row] != 0) { //row->nowcolumn?
-					std::vector<double>change = tem.matrix[_column];
-					tem.matrix[_column] = tem.matrix[_row];
-					tem.matrix[_row] = change;
-					allzero = false;
-					break;
-				}
-			}
-			if (allzero) {
-				if (istriangle == false)
-				{
-					_row--;
-					nowColumn++;
-				}
-			}
-		}
-	}
+	//std::cout << tem;
+	tem = tem.Guass();
 
-	//std::cout << "rank:"<< std::endl<<tem << endl;
-
+	//std::cout << "rank:"<< std::endl<<tem << std::endl;
+	//std::cout <<"看"<<tem.column << " " << tem.row << std::endl;
 	int rank = std::min(tem.column,tem.row);
 	for (int i = 0; i < tem.row; i++)
 	{
 		bool allzero = true;
 		for (int j = 0; j < tem.column; j++)
 		{
-			if (tem.matrix[i][j] != 0) {
+			
+				//std::cout << "幹" << tem.matrix[i][j] << std::endl;
+			
+
+			if (std::abs(tem.matrix[i][j]) > 0.000001 ) {
 				allzero = false;
 				break;
 			}
 		}
-		if (allzero)
+
+
+		if (allzero==true)
 		{
 			rank--;
 		}
@@ -724,7 +680,7 @@ double Matrix::Rank()
 	return rank;
 
 }
-Matrix Matrix::eigenMatrix(double a)
+Matrix Matrix::eigenMatrix(long double a)
 {
 	Matrix ans(*this);
 	//std::cout <<"第一"<< ans;
@@ -746,10 +702,11 @@ re Matrix::linear_system(VectorSpace _vec)
 			throw "線性系統無對應";
 	
 		Matrix tem(*this);
-		std::cout << tem;
+		tem = tem.Guass();
+//		std::cout << tem;
 		//std::string *variance = new std::string[tem.column];
 		bool *variance = new bool[tem.column];
-		double *variancenum = new double[tem.column];
+		long double *variancenum = new long double[tem.column];
 		for (int i = 0; i < tem.column; i++)
 		{
 			variancenum[i] = 1;
@@ -761,90 +718,90 @@ re Matrix::linear_system(VectorSpace _vec)
 			variance[i] = false;
 			//cout << variance[i] << endl;
 		}
-		tem.column += 1;
-		for (int i = 0; i < row; i++)
-		{
-			tem.matrix[i].push_back(-1 * _vec.getNumInSpace(i));
-		}
-		int nowColumn = 0;
-		double mult = 0;
-		for (int _row = 0; _row < tem.row; _row++)
-		{
-			//std::cout << "test\n" << tem;
-			//std::cout << tem;
-			//cout << _row << "   " << endl << tem;
-			if (tem.matrix[_row][nowColumn] != 0)
-			{
-				for (int _column = nowColumn; _column < tem.row; _column++)
-				{
-					if (_column != _row) {
-						mult = tem.matrix[_column][_row] / tem.matrix[_row][nowColumn];
-
-						for (int i = nowColumn; i < tem.column; i++)
-						{
-							tem.matrix[_column][i] -= mult * tem.matrix[_row][i];
-							/*if (tem.matrix[_column][i] < 0.000001)
-							{
-								tem.matrix[_column][i] = 0;
-							}*/
-
-						}
-						//cout << mult << "  " << endl << tem;
-					}
-				}
-				nowColumn++;
-			}
-			else
-			{
-				if (_row == tem.row - 1) break;
-				bool allzero = true;
-				bool istriangle = false;
-				for (int _column = _row + 1; _column < tem.row; _column++)
-				{
-					if (_column == tem.row - 1) {
-						if (tem.matrix[_column][_row] == 0)
-						{
-							istriangle = true;
-						}
-					}
-					if (tem.matrix[_column][_row] != 0) { //row->nowcolumn?
-						std::vector<double>change = tem.matrix[_column];
-						tem.matrix[_column] = tem.matrix[_row];
-						tem.matrix[_row] = change;
-						allzero = false;
-						break;
-					}
-				}
-				if (allzero) {
-					if (istriangle == false)
-					{
-						_row--;
-						nowColumn++;
-					}
-				}
-			}
-		}
-
-
-	/*	
-		for (int i = 0; i < tem.row; i++)
-		{
-			for (int j = 0; j < tem.column; j++)
-			{
-				if (tem.matrix[i][j] <= 0.000001)
-				{
-					tem.matrix[i][j] = 0;
-				}
-			}
-		}
-*/
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-		//std::cout <<"test\n" <<tem;
+//		tem.column += 1;
+//		for (int i = 0; i < row; i++)
+//		{
+//			tem.matrix[i].push_back(-1 * _vec.getNumInSpace(i));
+//		}
+//		int nowColumn = 0;
+//		long double mult = 0;
+//		for (int _row = 0; _row < tem.row; _row++)
+//		{
+//			//std::cout << "test\n" << tem;
+//			//std::cout << tem;
+//			//cout << _row << "   " << endl << tem;
+//			if (tem.matrix[_row][nowColumn] != 0)
+//			{
+//				for (int _column = nowColumn; _column < tem.row; _column++)
+//				{
+//					if (_column != _row) {
+//						mult = tem.matrix[_column][_row] / tem.matrix[_row][nowColumn];
+//
+//						for (int i = nowColumn; i < tem.column; i++)
+//						{
+//							tem.matrix[_column][i] -= mult * tem.matrix[_row][i];
+//							/*if (tem.matrix[_column][i] < 0.000001)
+//							{
+//								tem.matrix[_column][i] = 0;
+//							}*/
+//
+//						}
+//						//cout << mult << "  " << endl << tem;
+//					}
+//				}
+//				nowColumn++;
+//			}
+//			else
+//			{
+//				if (_row == tem.row - 1) break;
+//				bool allzero = true;
+//				bool istriangle = false;
+//				for (int _column = _row + 1; _column < tem.row; _column++)
+//				{
+//					if (_column == tem.row - 1) {
+//						if (tem.matrix[_column][_row] == 0)
+//						{
+//							istriangle = true;
+//						}
+//					}
+//					if (tem.matrix[_column][_row] != 0) { //row->nowcolumn?
+//						std::vector<long double>change = tem.matrix[_column];
+//						tem.matrix[_column] = tem.matrix[_row];
+//						tem.matrix[_row] = change;
+//						allzero = false;
+//						break;
+//					}
+//				}
+//				if (allzero) {
+//					if (istriangle == false)
+//					{
+//						_row--;
+//						nowColumn++;
+//					}
+//				}
+//			}
+//		}
+//
+//
+//	/*	
+//		for (int i = 0; i < tem.row; i++)
+//		{
+//			for (int j = 0; j < tem.column; j++)
+//			{
+//				if (tem.matrix[i][j] <= 0.000001)
+//				{
+//					tem.matrix[i][j] = 0;
+//				}
+//			}
+//		}
+//*/
+//
+//
+//		//////////////////////////////////////////////////////////////////////////////////////////////
+//
+//
+//
+//		//std::cout <<"test\n" <<tem;
 		VectorSpace temvec(row);
 		for (int i = 0; i < row; i++)
 		{
@@ -917,8 +874,8 @@ re Matrix::linear_system(VectorSpace _vec)
 		for (int i = R; i>=0; i--)
 		{
 		
-			double mother = tem.matrix[i][i];
-			double kid = temvec.getNumInSpace(i);
+			long double mother = tem.matrix[i][i];
+			long double kid = temvec.getNumInSpace(i);
 			for (int j = i+1; j <=C; j++)
 			{
 				kid -= variancenum[j] * tem.matrix[i][j];
@@ -976,8 +933,8 @@ re Matrix::linear_system(VectorSpace _vec)
 //			ans.up = true;
 
 //			std::string phrase="";
-//			std::map<std::string, double> coefficent;
-//			std::map<std::string, double>::iterator iter;
+//			std::map<std::string, long double> coefficent;
+//			std::map<std::string, long double>::iterator iter;
 //			std::string text = "";
 //			for (int j = tem.column - 1; j >i; j--)//處理問題
 //			{
@@ -990,14 +947,14 @@ re Matrix::linear_system(VectorSpace _vec)
 //				{
 //					/*iter = coefficent.find("c");
 //					if (iter == coefficent.end()) {
-//						coefficent.insert(std::pair<std::string, double>("c", 0));
+//						coefficent.insert(std::pair<std::string, long double>("c", 0));
 //					}*/
 //					if (variance[j][k] == 'x')//遇到x
 //					{
 
 //						ss.clear();
 //						ss << text;
-//						double _num=1;
+//						long double _num=1;
 //						ss >> _num;
 //						std::string text_v ="";
 //						while (variance[j][k]!=' '||variance[j][k]!='\0')
@@ -1026,11 +983,11 @@ re Matrix::linear_system(VectorSpace _vec)
 
 //						if (iter == coefficent.end()) {
 
-//							coefficent.insert(std::pair<std::string, double>(text_v,tem.matrix[i][j]*_num));
+//							coefficent.insert(std::pair<std::string, long double>(text_v,tem.matrix[i][j]*_num));
 //						}
 //						else {
 //							//cout << iter->second << endl;
-//							double n =iter->second;
+//							long double n =iter->second;
 //							n+= tem.matrix[i][j] * _num;
 //							iter->second = n;
 //						}
@@ -1040,11 +997,11 @@ re Matrix::linear_system(VectorSpace _vec)
 //					else if (variance[j][k] == 'c')//遇到+
 //					{
 //						ss << text;
-//						double _num=1;
+//						long double _num=1;
 //						ss >> _num;
 //						iter = coefficent.find("c");
 //						if (iter == coefficent.end()) {
-//							coefficent.insert(std::pair<std::string, double>("c", tem.matrix[i][j] * _num));
+//							coefficent.insert(std::pair<std::string, long double>("c", tem.matrix[i][j] * _num));
 //						}
 //						else {
 //							iter->second += tem.matrix[i][j] * _num;
@@ -1071,7 +1028,7 @@ re Matrix::linear_system(VectorSpace _vec)
 //			//移向
 //			/*iter = coefficent.find("c");
 //			if (iter == coefficent.end()) {
-//				coefficent.insert(std::pair<std::string, double>("c",temvec.getNumInSpace(i)));
+//				coefficent.insert(std::pair<std::string, long double>("c",temvec.getNumInSpace(i)));
 //			}
 //			else {
 //				iter->second += temvec.getNumInSpace(i);
@@ -1081,7 +1038,7 @@ re Matrix::linear_system(VectorSpace _vec)
 
 //			if(tem.matrix[i][i]==0)
 //			{ 
-//				std::map<std::string, double>::iterator itrs;
+//				std::map<std::string, long double>::iterator itrs;
 //				std::string small="z99999999999";
 //				int smallnum = 0;
 //				int smllcof = 0;
@@ -1109,7 +1066,7 @@ re Matrix::linear_system(VectorSpace _vec)
 //			
 //				/*iter = coefficent.find("c");
 //				if (iter == coefficent.end()) {
-//					coefficent.insert(std::pair<std::string, double>("c", 0));
+//					coefficent.insert(std::pair<std::string, long double>("c", 0));
 //				}*/
 //			
 
@@ -1120,13 +1077,13 @@ re Matrix::linear_system(VectorSpace _vec)
 //						std::string into;
 //						if (iter->first == "c") {
 //							//std::cout << temvec.getNumInSpace(i) << std::endl;
-//							double _num = (temvec.getNumInSpace(i) - iter->second) / smllcof;
+//							long double _num = (temvec.getNumInSpace(i) - iter->second) / smllcof;
 //							ss << _num;
 //							ss >> into;
 //						}
 //						else
 //						{
-//							double _num = iter->second*(-1) / smllcof;
+//							long double _num = iter->second*(-1) / smllcof;
 //							ss << _num;
 //							ss >> into;
 //						}
@@ -1165,7 +1122,7 @@ re Matrix::linear_system(VectorSpace _vec)
 
 //				iter = coefficent.find("c");
 //				if (iter == coefficent.end()) {
-//					coefficent.insert(std::pair<std::string, double>("c", 0));
+//					coefficent.insert(std::pair<std::string, long double>("c", 0));
 //				}
 
 //				for (iter = coefficent.begin(); iter != coefficent.end(); iter++)
@@ -1173,13 +1130,13 @@ re Matrix::linear_system(VectorSpace _vec)
 //					std::stringstream ss;
 //					std::string into;
 //					if (iter->first == "c") {
-//						double _num = (temvec.getNumInSpace(i) - iter->second) / tem.matrix[i][i];
+//						long double _num = (temvec.getNumInSpace(i) - iter->second) / tem.matrix[i][i];
 //						ss << _num;
 //						ss >> into;
 //					}
 //					else
 //					{
-//						double _num = iter->second*(-1) / tem.matrix[i][i];
+//						long double _num = iter->second*(-1) / tem.matrix[i][i];
 //						ss << _num;
 //						ss >> into;
 //					}
@@ -1290,8 +1247,8 @@ re Matrix::linear_system(VectorSpace _vec)
 //				ans.up = true;
 
 //				std::string phrase = "";
-//				std::map<std::string, double> coefficent;
-//				std::map<std::string, double>::iterator iter;
+//				std::map<std::string, long double> coefficent;
+//				std::map<std::string, long double>::iterator iter;
 //				std::string text = "";
 //				for (int j = tem.column - 1; j > i; j--)//處理問題
 //				{
@@ -1305,7 +1262,7 @@ re Matrix::linear_system(VectorSpace _vec)
 //						
 //						iter = coefficent.find("c");
 //						if (iter == coefficent.end()) {
-//							coefficent.insert(std::pair<std::string, double>("c", 0));
+//							coefficent.insert(std::pair<std::string, long double>("c", 0));
 //						}
 
 //						if (variance[j][k] == 'x')//遇到x
@@ -1314,7 +1271,7 @@ re Matrix::linear_system(VectorSpace _vec)
 //							//ss.str ="";
 //							//std::cout << text << std::endl;
 //							ss << text;
-//							double _num = 1;
+//							long double _num = 1;
 //							ss >> _num;
 //							//std::cout << _num << std::endl;
 //							std::string text_v = "";
@@ -1344,12 +1301,12 @@ re Matrix::linear_system(VectorSpace _vec)
 
 //							if (iter == coefficent.end()) {
 
-//								coefficent.insert(std::pair<std::string, double>(text_v, tem.matrix[i][j] * _num));
+//								coefficent.insert(std::pair<std::string, long double>(text_v, tem.matrix[i][j] * _num));
 //							}
 //							else {
 //							//	std::cout<<"     "<<iter->first<<"   " <<iter->second<< std::endl;
 //								//std::cout << j << " " << variance[j] << std::endl;
-//								double n = iter->second;
+//								long double n = iter->second;
 //							//	std::cout <<  _num <<std::endl;
 //								n += tem.matrix[i][j] * _num;
 //								iter->second = n;
@@ -1361,11 +1318,11 @@ re Matrix::linear_system(VectorSpace _vec)
 //						else if (variance[j][k] == 'c')//遇到+
 //						{
 //							ss << text;
-//							double _num = 1;
+//							long double _num = 1;
 //							ss >> _num;
 //							iter = coefficent.find("c");
 //							if (iter == coefficent.end()) {
-//								coefficent.insert(std::pair<std::string, double>("c", tem.matrix[i][j] * _num));
+//								coefficent.insert(std::pair<std::string, long double>("c", tem.matrix[i][j] * _num));
 //							}
 //							else {
 //								iter->second += tem.matrix[i][j] * _num;
@@ -1392,7 +1349,7 @@ re Matrix::linear_system(VectorSpace _vec)
 //				//移向
 //				/*iter = coefficent.find("c");
 //				if (iter == coefficent.end()) {
-//					coefficent.insert(std::pair<std::string, double>("c",temvec.getNumInSpace(i)));
+//					coefficent.insert(std::pair<std::string, long double>("c",temvec.getNumInSpace(i)));
 //				}
 //				else {
 //					iter->second += temvec.getNumInSpace(i);
@@ -1402,7 +1359,7 @@ re Matrix::linear_system(VectorSpace _vec)
 
 //				if (tem.matrix[i][i] == 0)
 //				{
-//					std::map<std::string, double>::iterator itrs;
+//					std::map<std::string, long double>::iterator itrs;
 //					std::string small = "z99999999999";
 //					int smallnum = 0;
 //					int smllcof = 0;
@@ -1430,7 +1387,7 @@ re Matrix::linear_system(VectorSpace _vec)
 
 //					iter = coefficent.find("c");
 //					if (iter == coefficent.end()) {
-//						coefficent.insert(std::pair<std::string, double>("c", 0));
+//						coefficent.insert(std::pair<std::string, long double>("c", 0));
 //					}
 
 
@@ -1441,13 +1398,13 @@ re Matrix::linear_system(VectorSpace _vec)
 //							std::string into;
 //							if (iter->first == "c") {
 //								//std::cout << temvec.getNumInSpace(i) << std::endl;
-//								double _num = (temvec.getNumInSpace(i) - iter->second) / smllcof;
+//								long double _num = (temvec.getNumInSpace(i) - iter->second) / smllcof;
 //								ss << _num;
 //								ss >> into;
 //							}
 //							else
 //							{
-//								double _num = iter->second*(-1) / smllcof;
+//								long double _num = iter->second*(-1) / smllcof;
 //								ss << _num;
 //								ss >> into;
 //							}
@@ -1485,7 +1442,7 @@ re Matrix::linear_system(VectorSpace _vec)
 //				else {
 //					iter = coefficent.find("c");
 //					if (iter == coefficent.end()) {
-//						coefficent.insert(std::pair<std::string, double>("c", 0));
+//						coefficent.insert(std::pair<std::string, long double>("c", 0));
 //					}
 
 //					for (iter = coefficent.begin(); iter != coefficent.end(); iter++)
@@ -1493,7 +1450,7 @@ re Matrix::linear_system(VectorSpace _vec)
 //						std::stringstream ss;
 //						std::string into;
 //						if (iter->first == "c") {
-//							double _num = (temvec.getNumInSpace(i) - iter->second) / tem.matrix[i][i];
+//							long double _num = (temvec.getNumInSpace(i) - iter->second) / tem.matrix[i][i];
 //							ss << _num;
 //							ss >> into;
 //						}
@@ -1501,7 +1458,7 @@ re Matrix::linear_system(VectorSpace _vec)
 //						{
 //							//std::cout<< iter->first << "    :    "<<iter->second<< std::endl;
 //							//std::cout << iter->first << std::endl;
-//							double _num = iter->second*(-1) / tem.matrix[i][i];
+//							long double _num = iter->second*(-1) / tem.matrix[i][i];
 //							ss << _num;
 //							ss >> into;
 //						}
@@ -1598,7 +1555,7 @@ re Matrix::linear_system(VectorSpace _vec)
 	}
 	return re();
 }
-std::map<double, re> Matrix::eigenvalueAndeigenvectorUnder3()
+std::map<long double, re> Matrix::eigenvalueAndeigenvectorUnder3()
 {
 
 	try
@@ -1608,76 +1565,76 @@ std::map<double, re> Matrix::eigenvalueAndeigenvectorUnder3()
 		else if (row > 3)
 			throw "請選擇powermethod方法";
 		if (row == 2) {
-			std::map<double, re>ans;
-			std::map<double, re>::iterator it;
+			std::map<long double, re>ans;
+			std::map<long double, re>::iterator it;
 			VectorSpace vec(2);
 			if (((matrix[0][0] + matrix[1][1])*(matrix[0][0] + matrix[1][1]) - 4 * (matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0])) < 0)
 				throw "暫無複數處理";
-			double x1 = ((matrix[0][0] + matrix[1][1]) + sqrt((matrix[0][0] + matrix[1][1])*(matrix[0][0] + matrix[1][1]) - 4 * (matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0]))) / 2;
-			double x2 = ((matrix[0][0] + matrix[1][1]) - sqrt((matrix[0][0] + matrix[1][1])*(matrix[0][0] + matrix[1][1]) - 4 * (matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0]))) / 2;
+			long double x1 = ((matrix[0][0] + matrix[1][1]) + sqrt((matrix[0][0] + matrix[1][1])*(matrix[0][0] + matrix[1][1]) - 4 * (matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0]))) / 2;
+			long double x2 = ((matrix[0][0] + matrix[1][1]) - sqrt((matrix[0][0] + matrix[1][1])*(matrix[0][0] + matrix[1][1]) - 4 * (matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0]))) / 2;
 			Matrix tem(*this);
 			Matrix a;
 			a = tem.eigenMatrix(x1);
 			re first = a.linear_system(vec);
 			it = ans.find(x1);
 			if (it == ans.end()) {
-				ans.insert(std::pair<double, re>(x1,first));
+				ans.insert(std::pair<long double, re>(x1,first));
 			}
 			a = tem.eigenMatrix(x2);
 			re two = a.linear_system(vec);
 			it = ans.find(x2);
 			if (it == ans.end()) {
-				ans.insert(std::pair<double, re>(x2,two));
+				ans.insert(std::pair<long double, re>(x2,two));
 			}
 			return ans; 
 		}
 		else
 		{
-			double p1 = 1;
-			double p2 = -1*(matrix[0][0] + matrix[1][1] + matrix[2][2]);
-			double p3 =  (matrix[0][0]* matrix[2][2]+ matrix[1][1]* matrix[2][2]+ matrix[0][0] * matrix[1][1]- matrix[0][2] * matrix[2][0]- matrix[0][1] * matrix[1][0]- matrix[1][2] * matrix[2][1]);
-			double p4 = -1*(matrix[0][0] * matrix[1][1] * matrix[2][2] -
+			long double p1 = 1;
+			long double p2 = -1*(matrix[0][0] + matrix[1][1] + matrix[2][2]);
+			long double p3 =  (matrix[0][0]* matrix[2][2]+ matrix[1][1]* matrix[2][2]+ matrix[0][0] * matrix[1][1]- matrix[0][2] * matrix[2][0]- matrix[0][1] * matrix[1][0]- matrix[1][2] * matrix[2][1]);
+			long double p4 = -1*(matrix[0][0] * matrix[1][1] * matrix[2][2] -
 						matrix[0][2] * matrix[1][1] * matrix[2][0] -
 						matrix[0][1] * matrix[1][0] * matrix[2][2] -
 						matrix[0][0] * matrix[1][2] * matrix[2][1]);
-			double A = p2 * p2 - 3 * p1*p3;
-			double B = p2 * p3 - 9 * p1*p4;
-			double C = p3 * p3 - 3 * p2*p4;
-			double judge = B * B - 4 * A*C;
+			long double A = p2 * p2 - 3 * p1*p3;
+			long double B = p2 * p3 - 9 * p1*p4;
+			long double C = p3 * p3 - 3 * p2*p4;
+			long double judge = B * B - 4 * A*C;
 			if(judge>0) throw "暫無複數處理";
 			else
 			{
 				
-				double Q = (p2*p2 - 3 * p3) / 9;
-				double R = (2 * p2*p2*p2 - 9 * p3*p2 + 27 * p4) / 54;
-				double theata = RadtoAng(acos(R/sqrt(Q*Q*Q)));
-				double x1 = -2 * sqrt(Q)*cos(AngtoRad(theata / 3)) - p2 / 3;
-				double x2= -2 * sqrt(Q)*cos(AngtoRad(theata +360/ 3)) - p2 / 3;
-				double x3= -2 * sqrt(Q)*cos(AngtoRad(theata - 360 / 3)) - p2 / 3;
+				long double Q = (p2*p2 - 3 * p3) / 9;
+				long double R = (2 * p2*p2*p2 - 9 * p3*p2 + 27 * p4) / 54;
+				long double theata = RadtoAng(acos(R/sqrt(Q*Q*Q)));
+				long double x1 = -2 * sqrt(Q)*cos(AngtoRad(theata / 3)) - p2 / 3;
+				long double x2= -2 * sqrt(Q)*cos(AngtoRad(theata +360/ 3)) - p2 / 3;
+				long double x3= -2 * sqrt(Q)*cos(AngtoRad(theata - 360 / 3)) - p2 / 3;
 				Matrix tem(*this);
 				Matrix a;
-				std::map<double, re>ans;
-				std::map<double, re>::iterator it;
+				std::map<long double, re>ans;
+				std::map<long double, re>::iterator it;
 				VectorSpace vec(3);
 				a = tem.eigenMatrix(x1);
 				re first = a.linear_system(vec);
 				it = ans.find(x1);
 				if (it == ans.end()) {
-					ans.insert(std::pair<double, re>(x1, first));
+					ans.insert(std::pair<long double, re>(x1, first));
 				}
 				////
 				a = tem.eigenMatrix(x2);
 				re Two = a.linear_system(vec);
 				it = ans.find(x2);
 				if (it == ans.end()) {
-					ans.insert(std::pair<double, re>(x2, Two));
+					ans.insert(std::pair<long double, re>(x2, Two));
 				}
 				////
 				a = tem.eigenMatrix(x3);
 				re Two2 = a.linear_system(vec);
 				it = ans.find(x3);
 				if (it == ans.end()) {
-					ans.insert(std::pair<double, re>(x3, Two2));
+					ans.insert(std::pair<long double, re>(x3, Two2));
 				}
 				return ans;
 			}
@@ -1688,9 +1645,9 @@ std::map<double, re> Matrix::eigenvalueAndeigenvectorUnder3()
 	catch (const char* str) {
 		std::cerr << "錯誤: " << str << std::endl;
 	}
-	return std::map<double, re>();
+	return std::map<long double, re>();
 }
-std::map<double, re> Matrix::powerMethod()
+std::map<long double, re> Matrix::powerMethod()
 {
 	try
 	{
@@ -1715,17 +1672,17 @@ std::map<double, re> Matrix::powerMethod()
 		Matrix l = pp.Transpose();
 		Matrix ans1 = l * X2;
 		Matrix ans2 =p*X2;
-		double ans = ans1.getnuminMatrix(0,0)/ans2.getnuminMatrix(0,0);
+		long double ans = ans1.getnuminMatrix(0,0)/ans2.getnuminMatrix(0,0);
 		Matrix tem(*this);
 		Matrix a;
 		a = tem.eigenMatrix(ans);
 		VectorSpace vec(row);
 		re first = a.linear_system(vec);
-		std::map<double, re>an;
-		std::map<double, re>::iterator it;
+		std::map<long double, re>an;
+		std::map<long double, re>::iterator it;
 		it = an.find(ans);
 		if (it == an.end()) {
-			an.insert(std::pair<double, re>(ans,first));
+			an.insert(std::pair<long double, re>(ans,first));
 		}
 		return an;
 
@@ -1733,7 +1690,164 @@ std::map<double, re> Matrix::powerMethod()
 	catch (const char* str) {
 		std::cerr << "錯誤: " << str << std::endl;
 	}
-	return std::map<double, re>();
+	return std::map<long double, re>();
+}
+Matrix Matrix::Guass()
+{
+	Matrix tem(*this);
+	std::fstream file4;
+	file4.open("ans.txt", std::ios::out);
+	//int nowColumn = 0;//現在column
+	//int whererow = 0;//現在row
+	//long double mult = 0;
+	//file4 << "處使" << nowColumn << "\n" << tem << "///////////////////////////////////////\n";
+	//for (int _row = 0; _row < tem.row; _row++)
+	//{
+	//	
+	//	//std::cout << _row << "\n" << tem;
+	//	//cout << _row << "   " << endl << tem;
+	//	if (tem.matrix[whererow][nowColumn] != 0) //判斷每次做高斯的第一個是否為0
+	//	{
+	//		//std::cout << tem.matrix[_row][nowColumn] << std::endl;
+	//		//std::cout << nowColumn << "&" << _row << std::endl;
+	//		for (int _row2 = whererow+1; _row2 < tem.row; _row2++)
+	//		{
+	//		
+	//			if (_row2 !=whererow)
+	//			{
+	//				mult = (tem.matrix[_row2][nowColumn] / tem.matrix[whererow][nowColumn]);
+	//				//std::cout << mult << "  " << std::endl;
+	//				for (int i = nowColumn; i < tem.column; i++)
+	//				{
+	//					tem.matrix[_row2][i] -= mult * tem.matrix[whererow][i];
+	//				/*	if (tem.matrix[_row2][i] <=1e-14|| tem.matrix[_row2][i] == -0.00)
+	//					{
+	//						tem.matrix[_row2][i] = 0;
+	//					}*/
+
+	//				}
+	//				//std::cout << mult << "  " << std::endl ;
+	//			}
+
+	//		}
+	//		file4 << _row << nowColumn << "\n" << tem << "///////////////////////////////////////\n";
+
+	//		nowColumn++;
+	//		whererow++;
+	//	}
+	//	else
+	//	{
+	//		//std::cout << "hhh\n";
+	//		if (_row == tem.row - 1) break;
+	//		bool allzero = true;
+	//		bool istriangle = false;
+	//		//std::cout << tem.matrix[_row][nowColumn] << std::endl;
+	//		for (int y = _row + 1; y < tem.row; y++)
+	//		{
+	//			if (y == tem.row - 1) {
+	//				if (tem.matrix[y][_row] == 0)
+	//				{
+	//					istriangle = true;
+	//				}
+	//			}
+	//			if (tem.matrix[y][nowColumn] != 0) { //row->nowcolumn?
+	//				/*std::cout << tem.matrix[y][_row] << std::endl;*/
+	//				for (int i = 0; i < tem.column; i++)
+	//				{
+	//					long double change = tem.matrix[y][i];
+	//					tem.matrix[y][i] = tem.matrix[_row][i];
+	//					tem.matrix[_row][i] = change;
+	//				}
+	//				/*std::vector<long double>change = tem.matrix[y];
+	//				
+	//				tem.matrix[y] = tem.matrix[_row];
+	//				tem.matrix[_row] = change;*/
+	//				allzero = false;
+	//				file4 << "change"<<_row<<"  " << nowColumn << "\n" << tem << "///////////////////////////////////////\n";
+	//				//std::cout << "caheck"<<" "<<nowColumn<<" "<<_row<<"\n";
+	//				_row--;
+	//				break;
+
+	//			}
+	//		}
+	//		if (allzero) {
+	//			if (istriangle == false)
+	//			{
+	//				//std::cout << "hhh\n";
+	//				_row--;
+	//				nowColumn++;
+	//			}
+	//		}
+	//	}
+	//	//std::cout << "asdasd\n";
+
+	//}
+	//std::cout << "over\n";
+
+	int R = 0;
+	int C = 0;
+	
+	while (R<tem.row&&C<tem.column)
+	{
+	/*	if (R == 2 && C == 2) {
+			std::cout << "Dasd" << std::endl;
+			std::cout << "Dsadasdasdsadsad\n";
+			std::cout << tem.matrix[2][2] << std::endl;
+		}*/
+
+		if (std::abs(tem.matrix[R][C]) ==0 /*|| std::abs(tem.matrix[R][C])<=0.000001*/)// pivot不為0
+		{
+			
+			bool all0 = true;
+			//if (R + 1 == tem.row) break;
+			for (int i = R + 1; i < tem.row; i++)
+			{
+				if (tem.matrix[i][C] != 0)
+				{
+					for (int j = 0; j < tem.column; j++)
+					{
+						long double c = tem.matrix[i][j];
+						tem.matrix[i][j] = tem.matrix[R][j];
+						tem.matrix[R][j] = c;
+					}
+					all0 = false;
+					file4 << "change" << R << "  " << C << "\n" << tem << "///////////////////////////////////////\n";
+					break;
+				}
+			}
+			if (all0 == true)
+			{
+				C++;
+			}
+		}
+		else {
+		
+			for (int y2reduce = R + 1; y2reduce < tem.row; y2reduce++)
+			{
+				long double mother = tem.matrix[y2reduce][C] / tem.matrix[R][C];
+				for (int x = C; x < tem.column; x++)
+				{
+					tem.matrix[y2reduce][x] -= tem.matrix[R][x] * mother;
+					if (std::abs(tem.matrix[y2reduce][x]) <= 1e-11)
+					{
+						tem.matrix[y2reduce][x] = 0;
+					}
+				}
+			}
+			file4 << R <<"   " <<C << "\n" << tem << "///////////////////////////////////////\n";
+			R++;
+			C++;
+
+		}
+		
+	}
+		
+	
+
+
+
+
+	return tem;
 }
 bool Matrix::juge(Matrix b)
 {
@@ -1743,11 +1857,11 @@ bool Matrix::juge(Matrix b)
 	//std::cout << "tem2\n" << tem2;
 	for (int i = 0; i < column; i++)
 	{
-		double as = tem.getnuminMatrix(0, i);
-		double as2 = tem2.getnuminMatrix(0, i);
+		long double as = tem.getnuminMatrix(0, i);
+		long double as2 = tem2.getnuminMatrix(0, i);
 		for (int j = 0; j < row; j++)
 		{
-			double _num = tem.getnuminMatrix(j, i) /as;
+			long double _num = tem.getnuminMatrix(j, i) /as;
 			//std::cout << "qw" <<_num << std::endl;
 			tem.replaceNuminMatrix(j, i,_num);
 			_num = tem2.getnuminMatrix(j, i) / as2;
@@ -1774,7 +1888,7 @@ std::ostream & operator<<(std::ostream & os, const Matrix &A)
 	
 		for (int j = 0; j <A.column; j++) {
 			if (j == A.column - 1) os << std::setw(5)<<A.matrix[i][j];
-			else os << std::left<< std::setw(5) << A.matrix[i][j] << " , ";
+			else os << std::left<< std::setw(10) << std::fixed << std::setprecision(6) << A.matrix[i][j] << " , ";
 		}
 		os << std::endl;
 	}
@@ -1785,75 +1899,76 @@ std::ostream & operator<<(std::ostream & os, const Matrix &A)
 bool Linear_independent(std::vector<VectorSpace> _vec)
 {
 	Matrix tem("tem", _vec.size(), _vec[0].getvectorsize(), _vec);
-	//cout << tem;
-	int nowColumn = 0;
-	double mult = 0;
-	for (int _row = 0; _row < tem.getRow(); _row++)
-	{
-		//cout << _row << "   " << endl << tem;
-		if (tem.getnuminMatrix(_row,nowColumn) != 0)
-		{
-			for (int _column = nowColumn; _column < tem.getRow(); _column++)
-			{
-				if (_column != _row) {
-					mult = tem.getnuminMatrix(_column,_row) / tem.getnuminMatrix(_row, nowColumn);
+	tem = tem.Guass();
+	////cout << tem;
+	//int nowColumn = 0;
+	//long double mult = 0;
+	//for (int _row = 0; _row < tem.getRow(); _row++)
+	//{
+	//	//cout << _row << "   " << endl << tem;
+	//	if (tem.getnuminMatrix(_row,nowColumn) != 0)
+	//	{
+	//		for (int _column = nowColumn; _column < tem.getRow(); _column++)
+	//		{
+	//			if (_column != _row) {
+	//				mult = tem.getnuminMatrix(_column,_row) / tem.getnuminMatrix(_row, nowColumn);
 
-					for (int i = nowColumn; i < tem.getcolumn(); i++)
-					{
-						
-						tem.replaceNuminMatrix(_column, i, tem.getnuminMatrix(_column,i) - mult*tem.getnuminMatrix(_row, i));
+	//				for (int i = nowColumn; i < tem.getcolumn(); i++)
+	//				{
+	//					
+	//					tem.replaceNuminMatrix(_column, i, tem.getnuminMatrix(_column,i) - mult*tem.getnuminMatrix(_row, i));
 
-					}
-					//cout << mult << "  " << endl << tem;
-				}
-			}
-			nowColumn++;
-		}
-		else
-		{
-			if (_row == tem.getRow() - 1) break;
-			bool allzero = true;
-			bool istriangle = false;
-			for (int _column = _row + 1; _column < tem.getRow(); _column++)
-			{
-				if (_column == tem.getRow() - 1) {
-					if (tem.getnuminMatrix(_column,_row) == 0)
-					{
-						istriangle = true;
-					}
-				}
-				if (tem.getnuminMatrix(_column, _row) != 0) { //row->nowcolumn?
-					std::vector<double>change;
-					for (int i = 0; i <tem.getcolumn(); i++)
-					{
-						change.push_back(tem.getnuminMatrix(_column, i));
-					}
-					
-					for (int i = 0; i < tem.getcolumn(); i++)
-					{
-						//change.push_back(tem.getnuminMatrix(_column, i));
-						tem.replaceNuminMatrix(_column, i,tem.getnuminMatrix(_row, i));
-					}
-					for (int i = 0; i < tem.getcolumn(); i++)
-					{
-						//change.push_back(tem.getnuminMatrix(_column, i));
-						tem.replaceNuminMatrix(_row, i, change[i]);
-					}
-					//tem.matrix[_column] = tem.matrix[_row];
-					//tem.matrix[_row] = change;
-					allzero = false;
-					break;
-				}
-			}
-			if (allzero) {
-				if (istriangle == false)
-				{
-					_row--;
-					nowColumn++;
-				}
-			}
-		}
-	}
+	//				}
+	//				//cout << mult << "  " << endl << tem;
+	//			}
+	//		}
+	//		nowColumn++;
+	//	}
+	//	else
+	//	{
+	//		if (_row == tem.getRow() - 1) break;
+	//		bool allzero = true;
+	//		bool istriangle = false;
+	//		for (int _column = _row + 1; _column < tem.getRow(); _column++)
+	//		{
+	//			if (_column == tem.getRow() - 1) {
+	//				if (tem.getnuminMatrix(_column,_row) == 0)
+	//				{
+	//					istriangle = true;
+	//				}
+	//			}
+	//			if (tem.getnuminMatrix(_column, _row) != 0) { //row->nowcolumn?
+	//				std::vector<long double>change;
+	//				for (int i = 0; i <tem.getcolumn(); i++)
+	//				{
+	//					change.push_back(tem.getnuminMatrix(_column, i));
+	//				}
+	//				
+	//				for (int i = 0; i < tem.getcolumn(); i++)
+	//				{
+	//					//change.push_back(tem.getnuminMatrix(_column, i));
+	//					tem.replaceNuminMatrix(_column, i,tem.getnuminMatrix(_row, i));
+	//				}
+	//				for (int i = 0; i < tem.getcolumn(); i++)
+	//				{
+	//					//change.push_back(tem.getnuminMatrix(_column, i));
+	//					tem.replaceNuminMatrix(_row, i, change[i]);
+	//				}
+	//				//tem.matrix[_column] = tem.matrix[_row];
+	//				//tem.matrix[_row] = change;
+	//				allzero = false;
+	//				break;
+	//			}
+	//		}
+	//		if (allzero) {
+	//			if (istriangle == false)
+	//			{
+	//				_row--;
+	//				nowColumn++;
+	//			}
+	//		}
+	//	}
+	//}
 
 	//cout << tem << endl;
 	/*有0列代表可以組合出為ld 否則li*/
@@ -1885,75 +2000,76 @@ bool Linear_independent(int howmany,VectorSpace *_vec)
 	std::string nm = "name";
 	int m = _vec[0].getvectorsize();
 	Matrix tem(howmany, m, *_vec);
-	//cout << tem;
-	int nowColumn = 0;
-	double mult = 0;
-	for (int _row = 0; _row < tem.getRow(); _row++)
-	{
-		//cout << _row << "   " << endl << tem;
-		if (tem.getnuminMatrix(_row, nowColumn) != 0)
-		{
-			for (int _column = nowColumn; _column < tem.getRow(); _column++)
-			{
-				if (_column != _row) {
-					mult = tem.getnuminMatrix(_column, _row) / tem.getnuminMatrix(_row, nowColumn);
+	tem = tem.Guass();
+	////cout << tem;
+	//int nowColumn = 0;
+	//long double mult = 0;
+	//for (int _row = 0; _row < tem.getRow(); _row++)
+	//{
+	//	//cout << _row << "   " << endl << tem;
+	//	if (tem.getnuminMatrix(_row, nowColumn) != 0)
+	//	{
+	//		for (int _column = nowColumn; _column < tem.getRow(); _column++)
+	//		{
+	//			if (_column != _row) {
+	//				mult = tem.getnuminMatrix(_column, _row) / tem.getnuminMatrix(_row, nowColumn);
 
-					for (int i = nowColumn; i < tem.getcolumn(); i++)
-					{
+	//				for (int i = nowColumn; i < tem.getcolumn(); i++)
+	//				{
 
-						tem.replaceNuminMatrix(_column, i, tem.getnuminMatrix(_column, i) - mult * tem.getnuminMatrix(_row, i));
+	//					tem.replaceNuminMatrix(_column, i, tem.getnuminMatrix(_column, i) - mult * tem.getnuminMatrix(_row, i));
 
-					}
-					//cout << mult << "  " << endl << tem;
-				}
-			}
-			nowColumn++;
-		}
-		else
-		{
-			if (_row == tem.getRow() - 1) break;
-			bool allzero = true;
-			bool istriangle = false;
-			for (int _column = _row + 1; _column < tem.getRow(); _column++)
-			{
-				if (_column == tem.getRow() - 1) {
-					if (tem.getnuminMatrix(_column, _row) == 0)
-					{
-						istriangle = true;
-					}
-				}
-				if (tem.getnuminMatrix(_column, _row) != 0) { //row->nowcolumn?
-					std::vector<double>change;
-					for (int i = 0; i < tem.getcolumn(); i++)
-					{
-						change.push_back(tem.getnuminMatrix(_column, i));
-					}
+	//				}
+	//				//cout << mult << "  " << endl << tem;
+	//			}
+	//		}
+	//		nowColumn++;
+	//	}
+	//	else
+	//	{
+	//		if (_row == tem.getRow() - 1) break;
+	//		bool allzero = true;
+	//		bool istriangle = false;
+	//		for (int _column = _row + 1; _column < tem.getRow(); _column++)
+	//		{
+	//			if (_column == tem.getRow() - 1) {
+	//				if (tem.getnuminMatrix(_column, _row) == 0)
+	//				{
+	//					istriangle = true;
+	//				}
+	//			}
+	//			if (tem.getnuminMatrix(_column, _row) != 0) { //row->nowcolumn?
+	//				std::vector<long double>change;
+	//				for (int i = 0; i < tem.getcolumn(); i++)
+	//				{
+	//					change.push_back(tem.getnuminMatrix(_column, i));
+	//				}
 
-					for (int i = 0; i < tem.getcolumn(); i++)
-					{
-						//change.push_back(tem.getnuminMatrix(_column, i));
-						tem.replaceNuminMatrix(_column, i, tem.getnuminMatrix(_row, i));
-					}
-					for (int i = 0; i < tem.getcolumn(); i++)
-					{
-						//change.push_back(tem.getnuminMatrix(_column, i));
-						tem.replaceNuminMatrix(_row, i, change[i]);
-					}
-					//tem.matrix[_column] = tem.matrix[_row];
-					//tem.matrix[_row] = change;
-					allzero = false;
-					break;
-				}
-			}
-			if (allzero) {
-				if (istriangle == false)
-				{
-					_row--;
-					nowColumn++;
-				}
-			}
-		}
-	}
+	//				for (int i = 0; i < tem.getcolumn(); i++)
+	//				{
+	//					//change.push_back(tem.getnuminMatrix(_column, i));
+	//					tem.replaceNuminMatrix(_column, i, tem.getnuminMatrix(_row, i));
+	//				}
+	//				for (int i = 0; i < tem.getcolumn(); i++)
+	//				{
+	//					//change.push_back(tem.getnuminMatrix(_column, i));
+	//					tem.replaceNuminMatrix(_row, i, change[i]);
+	//				}
+	//				//tem.matrix[_column] = tem.matrix[_row];
+	//				//tem.matrix[_row] = change;
+	//				allzero = false;
+	//				break;
+	//			}
+	//		}
+	//		if (allzero) {
+	//			if (istriangle == false)
+	//			{
+	//				_row--;
+	//				nowColumn++;
+	//			}
+	//		}
+	//	}
+	//}
 
 	//cout << tem << endl;
 	/*有0列代表可以組合出為ld 否則li*/

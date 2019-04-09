@@ -17,7 +17,7 @@ VectorSpace::~VectorSpace()
 	name.clear();
 }
 
-VectorSpace::VectorSpace(std::string _name, int _size, double * a)
+VectorSpace::VectorSpace(std::string _name, int _size, long double * a)
 {
 	//use try catch
 	name = _name;
@@ -29,7 +29,7 @@ VectorSpace::VectorSpace(std::string _name, int _size, double * a)
 	
 }
 
-VectorSpace::VectorSpace(std::string _name, int _size, std::vector<double> _vec)
+VectorSpace::VectorSpace(std::string _name, int _size, std::vector<long double> _vec)
 {
 	//use try catch
 	name = _name;
@@ -42,7 +42,7 @@ VectorSpace::VectorSpace(std::string _name)
 	name = _name;
 }
 
-VectorSpace::VectorSpace(std::string _name, double a)
+VectorSpace::VectorSpace(std::string _name, long double a)
 {
 	name = _name;
 	Vectorsize = 1;
@@ -73,13 +73,13 @@ VectorSpace::VectorSpace(int _size)
 	}
 }
 
-void VectorSpace::addNumInSpace(double _num)
+void VectorSpace::addNumInSpace(long double _num)
 {
 	vec.push_back(_num);
 	Vectorsize += 1;
 }
 
-void VectorSpace::changeNumInSpace(double _num, int place)
+void VectorSpace::changeNumInSpace(long double _num, int place)
 {
 	vec[place] = _num;
 }
@@ -98,7 +98,7 @@ int VectorSpace::getvectorsize()
 
 void VectorSpace::deleteNumplace(int place)
 {
-	std::vector<double>newone;
+	std::vector<long double>newone;
 	for (int i = 0; i <Vectorsize; i++)
 	{
 		if(i==place){}
@@ -109,7 +109,7 @@ void VectorSpace::deleteNumplace(int place)
 	Vectorsize -= 1;
 }
 
-double VectorSpace::getNumInSpace(int place)
+long double VectorSpace::getNumInSpace(int place)
 {
 	return vec[place];
 }
@@ -167,13 +167,13 @@ VectorSpace VectorSpace::operator-(const VectorSpace & _vec)
 	return VectorSpace();
 }
 
-double VectorSpace::operator*(const VectorSpace & _vec)
+long double VectorSpace::operator*(const VectorSpace & _vec)
 {
 	try
 	{
 		if (Vectorsize != _vec.Vectorsize)
 			throw "size不一樣";
-		double ans=0;
+		long double ans=0;
 		
 		for (int i = 0; i < Vectorsize; i++)
 		{
@@ -187,7 +187,7 @@ double VectorSpace::operator*(const VectorSpace & _vec)
 	return 0.0;
 }
 
-VectorSpace VectorSpace::operator/(const double & _Scalar)
+VectorSpace VectorSpace::operator/(const long double & _Scalar)
 {
 
 	try
@@ -209,7 +209,7 @@ VectorSpace VectorSpace::operator/(const double & _Scalar)
 
 }
 
-VectorSpace VectorSpace::operator*(const double & _Scalar)
+VectorSpace VectorSpace::operator*(const long double & _Scalar)
 {
 	VectorSpace ans(*this);
 	for (int i = 0; i < Vectorsize; i++)
@@ -229,7 +229,7 @@ VectorSpace VectorSpace::operator^( VectorSpace & _vec)
 		VectorSpace ans;
 		ans.Vectorsize = Vectorsize;
 		ans.vec.push_back(vec[1] * _vec.vec[2] - vec[2] * _vec.vec[1]);
-		ans.vec.push_back(vec[0] * _vec.vec[2] - vec[2] * _vec.vec[0]);
+		ans.vec.push_back((vec[0] * _vec.vec[2] - vec[2] * _vec.vec[0])*-1);
 		ans.vec.push_back(vec[0] * _vec.vec[1] - vec[1] * _vec.vec[0]);
 		return ans;
 	}
@@ -239,9 +239,9 @@ VectorSpace VectorSpace::operator^( VectorSpace & _vec)
 	return VectorSpace();
 }
 
-double VectorSpace::Norm()
+long double VectorSpace::Norm()
 {
-	double ans = 0;
+	long double ans = 0;
 	for (int i = 0; i < Vectorsize; i++)
 	{
 		ans += vec[i] * vec[i];
@@ -254,7 +254,7 @@ VectorSpace VectorSpace::Normalization()
 {
 	try
 	{
-		double denomainater = this->Norm();
+		long double denomainater = this->Norm();
 		if (denomainater == 0)
 			throw"0向量";
 		VectorSpace ans;
@@ -272,7 +272,7 @@ VectorSpace VectorSpace::Normalization()
 
 }
 
-double VectorSpace::AngleBetween(VectorSpace & _vec)
+long double VectorSpace::AngleBetween(VectorSpace & _vec)
 {
 
 	try
@@ -288,7 +288,7 @@ double VectorSpace::AngleBetween(VectorSpace & _vec)
 		{
 			throw "有0向量";
 		}*/
-		double ans = acos((tem*_vec) / (_vec.Norm()*tem.Norm()));
+		long double ans = acos((tem*_vec) / (_vec.Norm()*tem.Norm()));
 		//std::cout <<ans << std::endl;
 		return RadtoAng(ans);
 	}
@@ -299,7 +299,7 @@ double VectorSpace::AngleBetween(VectorSpace & _vec)
 	
 }
 
-double VectorSpace::TriangleArea(VectorSpace & _vec)
+long double VectorSpace::TriangleArea(VectorSpace & _vec)
 {
 	try
 	{
@@ -322,8 +322,8 @@ double VectorSpace::TriangleArea(VectorSpace & _vec)
 				{
 					a.vec[i] = b.vec[i] - _vec.vec[i];
 				}
-				double s = (a.Norm() + b.Norm() + _vec.Norm()) / 2;
-				double ans = sqrt(s*(s - a.Norm())*(s-b.Norm())*(s - _vec.Norm()));
+				long double s = (a.Norm() + b.Norm() + _vec.Norm()) / 2;
+				long double ans = sqrt(s*(s - a.Norm())*(s-b.Norm())*(s - _vec.Norm()));
 				return ans;
 			}
 		}
@@ -336,7 +336,7 @@ double VectorSpace::TriangleArea(VectorSpace & _vec)
 	
 }
 
-double VectorSpace::Component(VectorSpace & _vec)
+long double VectorSpace::Component(VectorSpace & _vec)
 {
 	try
 	{
@@ -345,7 +345,7 @@ double VectorSpace::Component(VectorSpace & _vec)
 		VectorSpace tem(*this);
 		if(_vec.Norm()==0) 
 			throw "0向量";
-		double ans = ( tem * _vec);
+		long double ans = ( tem * _vec);
 		ans = ans / _vec.Norm();
 		
 		return ans;
@@ -366,7 +366,7 @@ VectorSpace VectorSpace::Projection(VectorSpace & _vec)
 			throw "0向量";
 		VectorSpace tem(*this);
 		VectorSpace ans(*this);
-		double an = tem * _vec;
+		long double an = tem * _vec;
 		an = an / _vec.Norm();
 		ans = _vec.Normalization();
 		ans = ans * an;
@@ -387,7 +387,7 @@ bool VectorSpace::Parallel(VectorSpace & _vec)
 		
 		
 		VectorSpace A(*this),B(_vec);
-		double p = A.Normalization()*B.Normalization();
+		long double p = A.Normalization()*B.Normalization();
 		//std::cout << A << B;
 
 		if (p == 0) return false;
@@ -415,7 +415,7 @@ bool VectorSpace::Orthohonal(VectorSpace & _vec)
 		if (Vectorsize != _vec.Vectorsize)
 			throw "size不一樣";
 		
-		double ans = *this*_vec;
+		long double ans = *this*_vec;
 		if (ans == 0)return true;
 		else return false;
 	}
@@ -452,7 +452,7 @@ std::vector<VectorSpace> Orthonormalbasis(std::vector<VectorSpace> _vec)
 				
 				VectorSpace t;
 
-				double a=(_vec[i] * ans[j])/( ans[j] * ans[j]);
+				long double a=(_vec[i] * ans[j])/( ans[j] * ans[j]);
 			//	cout << a << endl;
 			//	cout <<"behind t" <<ans[j] << endl;
 				VectorSpace p(ans[j]);
