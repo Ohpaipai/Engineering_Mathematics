@@ -58,6 +58,7 @@ public:
 	double Rank();
 	Matrix eigenMatrix(double);
 	re  linear_system(VectorSpace _vec);
+	void rr(int, int, double*, bool*,VectorSpace, bool noans, re anst);
 	std::map<double, re> eigenvalueAndeigenvectorUnder3();
 	std::map<double, re> powerMethod();
 	Matrix Guass();

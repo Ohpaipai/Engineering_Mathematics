@@ -702,8 +702,14 @@ re Matrix::linear_system(VectorSpace _vec)
 			throw "線性系統無對應";
 	
 		Matrix tem(*this);
+		double *a = new double[tem.row];
+		for (int i = 0; i < tem.row; i++)
+		{
+			a[i] = 0;
+		}
+		tem.addColumn(a, tem.row);
 		tem = tem.Guass();
-//		std::cout << tem;
+		//std::cout << tem;
 		//std::string *variance = new std::string[tem.column];
 		bool *variance = new bool[tem.column];
 		double *variancenum = new double[tem.column];
@@ -817,23 +823,24 @@ re Matrix::linear_system(VectorSpace _vec)
 		ans.up = false;
 
 			//判斷是否有0列
-		int R = row-1;
-		int C = column-1;
+		int R = tem.row-1;
+		int C = tem.column-1;
 		bool noans = false;
-		for (int i = 0; i < row; i++)
+		for (int i = 0; i < tem.row; i++)
 		{
 			bool allzero = true;
-			for (int j = 0; j < column; j++)
+			for (int j = 0; j < tem.column; j++)
 			{
 				if (tem.matrix[i][j] != 0)
 				{
-					if (std::abs(tem.matrix[i][i]) <= 0.000011)
+					//std::cout << tem.matrix[i][j] << "\n";
+					if (std::abs(tem.matrix[i][j]) >= 1e-6)
 					{
-
-					}
-					else {
 						allzero = false;
 						break;
+					}
+					else {
+						
 					}
 
 				}
@@ -843,29 +850,31 @@ re Matrix::linear_system(VectorSpace _vec)
 				if (temvec.getNumInSpace(i) != 0) //00000->2
 				{
 					ans.up = true;
-					ans.A = "無解";
+					ans.A = "線性對應無到有無解";
 					throw"無解";
 				}
 				else
 				{
 					R--;
+					
 					if (tem.column == tem.row)//方陣
 					{
-						variance[i] = true;
+						//variance[i] = true;
 						variancenum[i] = 1;
 					}
 					else if (tem.column > tem.row)
 					{
 						for (int k = i+1; k <column; k++)
 						{
-							variance[k] = true;
+							//variance[k] = true;
 							variancenum[k] = 1;
 						}
 					}
 					else {
-						variance[i] = true;
+						//variance[i] = true;
 						variancenum[i] = 1;
 					}
+					//tem.deleterow(i);
 				}
 			}
 
@@ -875,26 +884,59 @@ re Matrix::linear_system(VectorSpace _vec)
 		{
 		
 			double mother = tem.matrix[i][i];
-			double kid = temvec.getNumInSpace(i);
-			for (int j = i+1; j <=C; j++)
+			if (mother ==0)
 			{
-				kid -= variancenum[j] * tem.matrix[i][j];
-			}
-			if (variance[i])
-			{
-				if (variancenum[i] != (kid / mother))
+				for (int z = R+1; z < tem.column ; z++)
 				{
-					ans.up = true;
-					noans = true;
-					ans.A = "無解";
-					throw "無解";
+					mother = tem.matrix[R][z];
+					if (mother != 0)
+					{
+						double kid = temvec.getNumInSpace(i);
+						for (int j = z + 1; j <= C; j++)
+						{
+							kid -= variancenum[j] * tem.matrix[i][j];
+						}
+						if (variance[z])
+						{
+							if (variancenum[z] != (kid / mother))
+							{
+								ans.up = true;
+								noans = true;
+								ans.A = "無解";
+								throw "無解";
+							}
+						}
+						else {
+							variance[z] = true;
+							variancenum[z] = (kid / mother);
+						}
+						break;
+					}
 				}
 			}
 			else {
-				variance[i] = true;
-				variancenum[i] = (kid / mother);
+				double kid = temvec.getNumInSpace(i);
+				for (int j = i + 1; j <= C; j++)
+				{
+					kid -= variancenum[j] * tem.matrix[i][j];
+				}
+				if (variance[i])
+				{
+					if (variancenum[i] != (kid / mother))
+					{
+						ans.up = true;
+						noans = true;
+						ans.A = "無解";
+						throw "無解";
+					}
+				}
+				else {
+					variance[i] = true;
+					variancenum[i] = (kid / mother);
+				}
 			}
 		}
+		//tem.rr(R, C, variancenum, variance, temvec, noans, ans);
 		
 		if (!noans)
 		{
@@ -1555,6 +1597,41 @@ re Matrix::linear_system(VectorSpace _vec)
 	}
 	return re();
 }
+
+void Matrix::rr(int R, int C, double *variancenum, bool *variance, VectorSpace temvec,bool noans,re ans)
+{
+	Matrix tem(*this);
+	if (R < 0)return;
+	if (R >= tem.row) return;
+	double mother = tem.matrix[R][R];
+	if (mother == 0)
+	{
+		return tem.rr(R + 1, C, variancenum, variance, temvec, noans, ans);
+	}
+	else {
+		double kid = temvec.getNumInSpace(R);
+		for (int j = R + 1; j <= C; j++)
+		{
+			kid -= variancenum[j] * tem.matrix[R][j];
+		}
+		if (variance[R])
+		{
+			if (variancenum[R] != (kid / mother))
+			{
+				ans.up = true;
+				noans = true;
+				ans.A = "無解";
+				throw "無解";
+			}
+		}
+		else {
+			variance[R] = true;
+			variancenum[R] = (kid / mother);
+		}
+	}
+	return tem.rr(R - 1, C, variancenum, variance, temvec, noans, ans);
+}
+
 std::map<double, re> Matrix::eigenvalueAndeigenvectorUnder3()
 {
 
@@ -1590,13 +1667,30 @@ std::map<double, re> Matrix::eigenvalueAndeigenvectorUnder3()
 		}
 		else
 		{
-			double p1 = 1;
+			/*double p1 = 1;
 			double p2 = -1*(matrix[0][0] + matrix[1][1] + matrix[2][2]);
-			double p3 =  (matrix[0][0]* matrix[2][2]+ matrix[1][1]* matrix[2][2]+ matrix[0][0] * matrix[1][1]- matrix[0][2] * matrix[2][0]- matrix[0][1] * matrix[1][0]- matrix[1][2] * matrix[2][1]);
-			double p4 = -1*(matrix[0][0] * matrix[1][1] * matrix[2][2] -
-						matrix[0][2] * matrix[1][1] * matrix[2][0] -
-						matrix[0][1] * matrix[1][0] * matrix[2][2] -
-						matrix[0][0] * matrix[1][2] * matrix[2][1]);
+			double p3 =  -1*(matrix[2][0]* matrix[0][1]- matrix[1][2]* matrix[2][1]+ matrix[0][1] * matrix[1][0]- matrix[0][0] * matrix[1][1]- matrix[1][1] * matrix[2][2]- matrix[0][0] * matrix[2][2]);
+			double p4 = -1*(matrix[0][1] * matrix[1][2] * matrix[2][0] -
+						matrix[0][1] * matrix[1][1] * matrix[2][0] +
+						matrix[0][0] * matrix[1][2] * matrix[2][1] -
+						matrix[0][2] * matrix[1][0] * matrix[2][1]+
+				matrix[0][0] * matrix[1][1] * matrix[2][2]-
+				matrix[0][1] * matrix[1][0] * matrix[2][2]);*/
+			double p1 = 1;
+			double p2 = -1 * (matrix[0][0] + matrix[1][1] + matrix[2][2]);
+			double p3 = (matrix[0][0] * matrix[2][2] + matrix[1][1] * matrix[2][2] + matrix[0][0] * matrix[1][1] - matrix[0][2] * matrix[2][0] - matrix[0][1] * matrix[1][0] - matrix[1][2] * matrix[2][1]);
+			/*double p4 = -1 * (matrix[0][0] * matrix[1][1] * matrix[2][2] -
+				matrix[0][2] * matrix[1][1] * matrix[2][0] -
+				matrix[0][1] * matrix[1][0] * matrix[2][2] -
+				matrix[0][0] * matrix[1][2] * matrix[2][1]);*/
+			double p4 = -1 * (matrix[0][0] * matrix[1][1] * matrix[2][2]+
+				matrix[0][1] * matrix[1][2] * matrix[2][0]+
+				matrix[0][2] * matrix[1][0] * matrix[2][1]-
+				matrix[0][2] * matrix[1][1] * matrix[2][0]-
+				matrix[0][1] * matrix[1][0] * matrix[2][2]-
+				matrix[0][0] * matrix[1][2] * matrix[2][1]
+				);
+			std::cout << p1 << "\n" << p2 << "\n" << p3 << "\n" << p4 << "\n";
 			double A = p2 * p2 - 3 * p1*p3;
 			double B = p2 * p3 - 9 * p1*p4;
 			double C = p3 * p3 - 3 * p2*p4;
@@ -1608,9 +1702,13 @@ std::map<double, re> Matrix::eigenvalueAndeigenvectorUnder3()
 				double Q = (p2*p2 - 3 * p3) / 9;
 				double R = (2 * p2*p2*p2 - 9 * p3*p2 + 27 * p4) / 54;
 				double theata = RadtoAng(acos(R/sqrt(Q*Q*Q)));
+				double a1 = theata + 360;
+				a1 /= 3;
+				double a2 = theata - 360;
+				a2 /= 3;
 				double x1 = -2 * sqrt(Q)*cos(AngtoRad(theata / 3)) - p2 / 3;
-				double x2= -2 * sqrt(Q)*cos(AngtoRad(theata +360/ 3)) - p2 / 3;
-				double x3= -2 * sqrt(Q)*cos(AngtoRad(theata - 360 / 3)) - p2 / 3;
+				double x2= -2 * sqrt(Q)*cos(AngtoRad(a1)) - p2 / 3;
+				double x3= -2 * sqrt(Q)*cos(AngtoRad(a2))- p2 / 3;
 				Matrix tem(*this);
 				Matrix a;
 				std::map<double, re>ans;

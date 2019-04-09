@@ -20,7 +20,7 @@ int main() {
 	vv.push_back(v4);
 	
 	std::cout << leastSquare(vv) << std::endl;*/
-	int aq =30 ;
+	int aq =2 ;
 	
 	std::fstream file1;
 	file1.open("v1.txt", std::ios::in);
@@ -57,7 +57,14 @@ int main() {
 	}
 	//std::cout << ma;
 	//std::cout << ma;
-	std::cout << ma.Rank() << std::endl;
+	std::map<double, re> ans = ma.eigenvalueAndeigenvectorUnder3();
+	std::map<double, re>::iterator it;
+	for (it=ans.begin();it!=ans.end();it++)
+	{
+		std::cout << it->first;
+		std::cout << it->second.B;
+	}
+	//std::cout << ma.Rank() << std::endl;
 	//file4 << ma.Rank();
 	//ma = ma.Guass();
 	//for (int i = 0; i < aq; i++)
