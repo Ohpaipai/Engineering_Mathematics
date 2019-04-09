@@ -22,7 +22,7 @@ public:
 	~Matrix();
 	Matrix(const Matrix& _matrix);
 	Matrix(std::string _name);
-	Matrix(std::string _name, int _row, int _column, std::vector<std::vector<long double>>_matrix);
+	Matrix(std::string _name, int _row, int _column, std::vector<std::vector<double>>_matrix);
 	Matrix(std::string _name, int _row, int _column, std::vector<VectorSpace>_matrix);
 	Matrix(int _row, int _column, VectorSpace _vec);
 	Matrix(std::string _name, int _row, int _column, VectorSpace _vec);
@@ -31,14 +31,14 @@ public:
 	Matrix(int _row, int _column,int n);
 	void changename(std::string _name);
 	friend std::ostream& operator<<(std::ostream& os, const Matrix&);
-	void addRow(long double *a,int _size);
-	void addRow(std::vector<long double> _tem, int _size);
+	void addRow(double *a,int _size);
+	void addRow(std::vector<double> _tem, int _size);
 	void addRow(VectorSpace _tem, int _size);
-	void addColumn(long double *a, int _size);
-	void addColumn(std::vector<long double> _tem, int _size);
+	void addColumn(double *a, int _size);
+	void addColumn(std::vector<double> _tem, int _size);
 	void addColumn(VectorSpace _tem, int _size);
-	void replaceNuminMatrix(int row, int column, long double _num);
-	long double getnuminMatrix(int _row, int _column);
+	void replaceNuminMatrix(int row, int column, double _num);
+	double getnuminMatrix(int _row, int _column);
 	void deleterow(int _row);
 	void deletecolumn(int _column);
 	int getcolumn();
@@ -47,26 +47,27 @@ public:
 	Matrix operator +(const Matrix&_matrix);
 	Matrix operator -(const Matrix&_matrix);
 	Matrix operator *(const Matrix&_matrix);
-	Matrix operator *(const long double&_Scalar);
-	Matrix operator /(const long double&_Scalar);
+	Matrix operator *(const double&_Scalar);
+	Matrix operator /(const double&_Scalar);
 	Matrix operator =(const Matrix&_matrix);
-	Matrix operator ^(const long double&_Scalar);
+	Matrix operator ^(const double&_Scalar);
 	Matrix Transpose();
-	long double determinants();
+	double determinants();
 	Matrix adjoint();
 	Matrix Inverse();
-	long double Rank();
-	Matrix eigenMatrix(long double);
+	double Rank();
+	Matrix eigenMatrix(double);
 	re  linear_system(VectorSpace _vec);
-	std::map<long double, re> eigenvalueAndeigenvectorUnder3();
-	std::map<long double, re> powerMethod();
+	std::map<double, re> eigenvalueAndeigenvectorUnder3();
+	std::map<double, re> powerMethod();
 	Matrix Guass();
+	double matrixToDouble();
 	
 	//least square
 private:
 	bool juge(Matrix b);
 	
-	std::vector<std::vector<long double>>matrix;
+	std::vector<std::vector<double>>matrix;
 	int row;
 	int column;
 	std::string name;

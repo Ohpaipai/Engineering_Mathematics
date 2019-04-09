@@ -2,11 +2,11 @@
 #include"VectorAndMatrix.h"
 
 int main() {
-	/*long double a[2] = {1,1};
-	long double a1[2] = { 2,3 };
-	long double a2[2] = { 3,4 };
-	long double a3[2] = { 4,6 };
-	long double a4[2] = { 5,5 };
+	/*double a[2] = {1,1};
+	double a1[2] = { 2,3 };
+	double a2[2] = { 3,4 };
+	double a3[2] = { 4,6 };
+	double a4[2] = { 5,5 };
 	VectorSpace v0("nam", 2, a);
 	VectorSpace v1("nam", 2, a1);
 	VectorSpace v2("nam", 2, a2);
@@ -20,14 +20,14 @@ int main() {
 	vv.push_back(v4);
 	
 	std::cout << leastSquare(vv) << std::endl;*/
-	int aq =3 ;
+	int aq =30 ;
 	
 	std::fstream file1;
 	file1.open("v1.txt", std::ios::in);
 	std::fstream file2;
 	file2.open("v2.txt", std::ios::in);
-	long double *a=new long double[aq];
-	long double *b = new long double[aq];
+	double *a=new double[aq];
+	double *b = new double[aq];
 	for (int i = 0; i < aq; i++)
 	{
 		file1 >> a[i];
@@ -49,7 +49,7 @@ int main() {
 	{
 		for (int j = 0 ; j < aq; j++)
 		{
-			long double l;
+			double l;
 			file3 >> l;
 			//std::cout << l << std::endl;
 			ma.replaceNuminMatrix(i, j, l);
@@ -59,7 +59,7 @@ int main() {
 	//std::cout << ma;
 	std::cout << ma.Rank() << std::endl;
 	//file4 << ma.Rank();
-	ma = ma.Guass();
+	//ma = ma.Guass();
 	//for (int i = 0; i < aq; i++)
 	//{
 	//	for (int j = 0; j < aq; j++)
@@ -73,19 +73,19 @@ int main() {
 
 
 
-//	long double a[5] = { 1,2,3,4,5 };
-//	long double b[3] = { 1,2,3 };
-//	long double c[3] = { 2,4,6 };
-//	long double aa[2][2] = { {4,2},{3,-1} };
-//	long double ab[3][4] = { {1, 2, 3, 3}, { 2,1,0,6 }, { 2,7,4,5 } };
+//	double a[5] = { 1,2,3,4,5 };
+//	double b[3] = { 1,2,3 };
+//	double c[3] = { 2,4,6 };
+//	double aa[2][2] = { {4,2},{3,-1} };
+//	double ab[3][4] = { {1, 2, 3, 3}, { 2,1,0,6 }, { 2,7,4,5 } };
 //	//{3,0,2,2},{-6,42,24,54},{21,-21,0,-15}
 //	//{1, 0, 0, 0}, { 0,1,0,0 }, { 0,0,0,1 }
 //	//{5,2,1},{-3,4,-11},{2,-1,4}
 //	//{4,5,6},{8,10,12},{9,6,7}
-//	long double x[3] = {1,1,1};
-//	long double y[3] = { 1,2,2 };
-//	long double z[3] = {1,1,0};
-//	long double k[3] = { 0,0,0 };
+//	double x[3] = {1,1,1};
+//	double y[3] = { 1,2,2 };
+//	double z[3] = {1,1,0};
+//	double k[3] = { 0,0,0 };
 //	VectorSpace x1("nam", 3, x);
 //	VectorSpace x2("nam", 3, y);
 //	VectorSpace x3("nam", 3, z);
@@ -98,7 +98,7 @@ int main() {
 ////	std::cout << m6;
 //	//m6.Rank();
 //	//cout << m6;
-//	std::vector<std::vector<long double>>t;
+//	std::vector<std::vector<double>>t;
 //	t.resize(2);
 //	for (int i = 0; i < 2; i++)
 //	{
@@ -108,7 +108,7 @@ int main() {
 //			t[i][j]=aa[i][j];
 //		}
 //	}
-//	std::vector<std::vector<long double>>tt;
+//	std::vector<std::vector<double>>tt;
 //	tt.resize(3);
 //	for (int i = 0; i < 3; i++)
 //	{
@@ -121,8 +121,8 @@ int main() {
 //	std::string name = "d";
 //	Matrix m1(name,2, 2,t);	
 //	//cout << m1.Rank() << endl;
-//	std::map<long double, re>an;
-//	std::map<long double, re>::iterator it;
+//	std::map<double, re>an;
+//	std::map<double, re>::iterator it;
 //	an = m1.powerMethod();
 //	for (it=an.begin();it!=an.end();it++)
 //	{

@@ -17,40 +17,40 @@ class VectorSpace
 public:
 	VectorSpace();
 	~VectorSpace();
-	VectorSpace(std::string _name, int _size, long double *a);
-	VectorSpace(std::string _name, int _size, std::vector<long double>_vec);
+	VectorSpace(std::string _name, int _size, double *a);
+	VectorSpace(std::string _name, int _size, std::vector<double>_vec);
 	VectorSpace(std::string _name);
-	VectorSpace(std::string _name, long double a); 
+	VectorSpace(std::string _name, double a); 
 	void changename(std::string _name);
 	VectorSpace(std::string _name,int _size);
 	VectorSpace(int _size);
-	void addNumInSpace(long double _num);
-	void changeNumInSpace(long double _num, int place);
+	void addNumInSpace(double _num);
+	void changeNumInSpace(double _num, int place);
 	VectorSpace(const VectorSpace& _vec);
 	friend std::ostream& operator<<(std::ostream& os, const VectorSpace&);
 	int getvectorsize();
 	void deleteNumplace(int place);
-	long double getNumInSpace(int place);
+	double getNumInSpace(int place);
 	std::string getName();
 	VectorSpace operator +(const VectorSpace& _vec);
 	VectorSpace operator =(const VectorSpace& _vec);
 	VectorSpace operator -(const VectorSpace& _vec);
-long double operator *(const VectorSpace& _vec); //¤º¿n
-	VectorSpace operator /(const long double& _Scalar);
-	VectorSpace operator *(const long double& _Scalar);
+double operator *(const VectorSpace& _vec); //¤º¿n
+	VectorSpace operator /(const double& _Scalar);
+	VectorSpace operator *(const double& _Scalar);
 	VectorSpace operator ^(VectorSpace& _vec);
-long double Norm();
+double Norm();
 	VectorSpace Normalization();
-	long double AngleBetween(VectorSpace& _vec);
-	long double TriangleArea(VectorSpace& _vec);
-	long double Component(VectorSpace& _vec);
+	double AngleBetween(VectorSpace& _vec);
+	double TriangleArea(VectorSpace& _vec);
+	double Component(VectorSpace& _vec);
 	VectorSpace Projection(VectorSpace& _vec);
 	bool Parallel(VectorSpace &_vec);
 	bool Orthohonal(VectorSpace&_vec);
-	
+	double vectorToDouble();
 	//Linear_independent judgement
 private:
-	std::vector<long double>vec;
+	std::vector<double>vec;
 	std::string name;
 	int Vectorsize;
 };
