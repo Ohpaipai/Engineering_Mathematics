@@ -374,9 +374,11 @@ Matrix Matrix::operator*(const Matrix & _matrix)
 					//std::cout << matrix[i][k] << std::endl;
 					//std::cout << _matrix.matrix[k][j] << std::endl;
 					ans.matrix[i][j] += matrix[i][k] * _matrix.matrix[k][j];
+					//std::cout << matrix[i][j] << std::endl;
 				}
 			}
 		}
+		//std::cout << ans;
 		return ans;
 	}
 	catch (const char* str) {
@@ -673,7 +675,7 @@ Matrix Matrix::adjoint()
 	catch (const char* str) {
 		std::cerr << "錯誤: " << str << std::endl;
 	}
-	//return *this ;
+	return *this ;
 }
 Matrix Matrix::Inverse()
 {
@@ -682,29 +684,174 @@ Matrix Matrix::Inverse()
 	{
 		if (row != column)
 			throw "matrix非方陣";
-		else if(this->determinants()==0)
-			throw "matrix無可逆矩陣";
-		Matrix ans(*this);
-		//std::cout <<"inverse 初始\n" <<ans;
-		Matrix anss = ans.adjoint();
-		//std::cout <<"我的adj\n" <<ans;
-		double denomainater = this->determinants();
-		if (denomainater == 0) return anss;
-		else {
-			for (int i = 0; i < row; i++)
+		Matrix tem(*this);
+		Matrix d(tem.row,tem.column,0);
+		for (int i = 0; i < tem.row; i++)
+		{
+			d.matrix[i][i] = 1;
+		}
+		int R = 0;
+		int C = 0;
+		while (R < tem.row&&C < tem.column)
+		{
+			/*	if (R == 2 && C == 2) {
+					std::cout << "Dasd" << std::endl;
+					std::cout << "Dsadasdasdsadsad\n";
+					std::cout << tem.matrix[2][2] << std::endl;
+				}*/
+			//std::cout << d;
+			if (std::abs(tem.matrix[R][C]) == 0 /*|| std::abs(tem.matrix[R][C])<=0.000001*/)// pivot不為0
 			{
-				for (int j = 0; j < column; j++)
+
+				bool all0 = true;
+				//if (R + 1 == tem.row) break;
+				for (int i = R + 1; i < tem.row; i++)
 				{
-					anss.matrix[i][j] /= denomainater;
+					if (tem.matrix[i][C] != 0)
+					{
+						for (int j = 0; j < tem.column; j++)
+						{
+							double c = tem.matrix[i][j];
+							tem.matrix[i][j] = tem.matrix[R][j];
+							tem.matrix[R][j] = c;
+							///////////////////////
+							double rer = d.matrix[i][j];
+							d.matrix[i][j] = d.matrix[R][j];
+							d.matrix[R][j] = rer;
+						}
+						all0 = false;
+						break;
+					}
+				}
+				if (all0 == true)
+				{
+					C++;
 				}
 			}
-			return anss;
+			else {
+				
+
+				for (int y2reduce = R + 1; y2reduce < tem.row; y2reduce++)
+				{
+					double mother = tem.matrix[y2reduce][C] / tem.matrix[R][C];
+					for (int x = C; x < tem.column; x++)
+					{
+						tem.matrix[y2reduce][x] -= tem.matrix[R][x] * mother;
+						
+						if (std::abs(tem.matrix[y2reduce][x]) <= 11e-6)
+						{
+							tem.matrix[y2reduce][x] = 0;
+						}
+						
+					}
+					for (int x = 0; x < tem.column; x++)
+					{
+						d.matrix[y2reduce][x] -= d.matrix[R][x] * mother;
+						if (std::abs(d.matrix[y2reduce][x]) <= 11e-6)
+						{
+							d.matrix[y2reduce][x] = 0;
+						}
+					}
+				}
+				R++;
+				C++;
+
+			}
+
 		}
+		
+		//std::cout << d;
+		bool detequal0 = false;
+		for (int i = 0; i < tem.row; i++)
+		{
+			if (tem.matrix[i][i] == 0)
+			{
+				detequal0 = true;
+				throw "det為0 無逆矩陣";
+			}
+			else {
+				double mother = tem.matrix[i][i];
+				for (int j = 0; j < tem.column; j++) //那一行變成1
+				{
+					tem.matrix[i][j] /= mother;
+					d.matrix[i][j] /= mother;
+				}
+			}
+		}
+
+
+
+
+		if (detequal0 == false)
+		{
+			for (int i = tem.row-1; i >= 0; i--)
+			{
+				
+				
+
+				//std::cout << i << "變為1\n" << tem<<d ;
+				for (int k = i-1; k >=0; k--)
+				{
+					double mother = tem.matrix[k][i];
+					//std::cout << "mothyer " << mother << std::endl;
+					for (int l = 0; l < tem.column; l++)
+					{
+						tem.matrix[k][l] -= mother* tem.matrix[i][l];
+						d.matrix[k][l] -= mother* d.matrix[i][l];
+						if (std::abs(tem.matrix[k][l]) <= 11e-6)
+						{
+							tem.matrix[k][l] = 0;
+						}
+						if (std::abs(d.matrix[k][l]) <= 11e-6)
+						{
+							d.matrix[k][l] = 0;
+						}
+					}
+				}
+				//std::cout << i << "做完\n" << tem<<d ;
+
+			}
+
+
+			//std::cout << tem;
+			return d;
+		}
+#pragma region 原版
+		//VectorSpace a(tem.row);
+//for (int i = 0; i <tem.row; i++)
+//{
+//	a.changeNumInSpace(1,i);
+////	std::cout << a;
+//	re record=tem.linear_system(a);
+//	for (int j = 0; j < tem.row; j++)
+//	{
+//		d.matrix[j][i] = record.B.getNumInSpace(j);
+//	}
+//}
+//std::cout << d;
+
+//std::cout <<"inverse 初始\n" <<ans;
+//Matrix anss = ans.adjoint();
+//std::cout <<"我的adj\n" <<ans;
+/*double denomainater = this->determinants();
+if (denomainater == 0) return anss;
+else {
+	for (int i = 0; i < row; i++)
+	{
+		for (int j = 0; j < column; j++)
+		{
+			anss.matrix[i][j] /= denomainater;
+		}
+	}
+	return anss;
+}*/
+#pragma endregion
+		
 	}
 	catch (const char* str) {
 		std::cerr << "錯誤: " << str << std::endl;
 	}
-	//return *this ;
+	return *this ;
 }
 double Matrix::Rank()
 {
@@ -1892,8 +2039,8 @@ std::map<double, re> Matrix::powerMethod()
 Matrix Matrix::Guass()
 {
 	Matrix tem(*this);
-	std::fstream file4;
-	file4.open("ans.txt", std::ios::out);
+	/*std::fstream file4;
+	file4.open("ans.txt", std::ios::out);*/
 #pragma region 註解
 	//int nowColumn = 0;//現在column
 //int whererow = 0;//現在row
@@ -1986,7 +2133,7 @@ Matrix Matrix::Guass()
 
 	int R = 0;
 	int C = 0;
-	file4 << "first" << R << "  " << C << "\n" << tem << "///////////////////////////////////////\n";
+	//file4 << "first" << R << "  " << C << "\n" << tem << "///////////////////////////////////////\n";
 	while (R<tem.row&&C<tem.column)
 	{
 	/*	if (R == 2 && C == 2) {
@@ -2011,7 +2158,7 @@ Matrix Matrix::Guass()
 						tem.matrix[R][j] = c;
 					}
 					all0 = false;
-					file4 << "change" << R << "  " << C << "\n" << tem << "///////////////////////////////////////\n";
+					//file4 << "change" << R << "  " << C << "\n" << tem << "///////////////////////////////////////\n";
 					break;
 				}
 			}
@@ -2034,7 +2181,7 @@ Matrix Matrix::Guass()
 					}
 				}
 			}
-			file4 << R <<"   " <<C << "\n" << tem << "///////////////////////////////////////\n";
+			//file4 << R <<"   " <<C << "\n" << tem << "///////////////////////////////////////\n";
 			R++;
 			C++;
 
@@ -2057,6 +2204,8 @@ double Matrix::matrixToDouble()
 
 Matrix Matrix::leastSquare(Matrix a)
 {
+	/*std::fstream file4;
+	file4.open("ans.txt", std::ios::out);*/
 	Matrix tem(*this);
 	Matrix temT = tem.Transpose();
 	//std::cout << temT;
@@ -2064,17 +2213,23 @@ Matrix Matrix::leastSquare(Matrix a)
 	//std::cout << T.column<<" "<<T.row<<"\n";
 	//std::cout << T;
 	Matrix tinverse = T.Inverse();
-	std::cout << "dasdasd\n";
+	//file4 << tinverse;
+	//std::cout << "dasdasd\n";
 	//T = T.Inverse();
 	//std::cout << tinverse ;
 	//std::cout << T;
 	//std::cout << temT;
-	 //Matrix X = tinverse * temT;
+	 Matrix X = tinverse * temT;
+	 //file4 << X;
 	//std::cout << X;
 	//std::cout << a;
-	 Matrix ans;
-	 //ans = X * a;
+	 Matrix ans = X * a;
+	 
+	/* file4 << X;
+	 file4<<a;*/
+	 //std::cout <<"dsadsad\n" <<ans;
 	return ans;
+
 }
 
 bool Matrix::juge(Matrix b)
@@ -2120,7 +2275,7 @@ std::ostream & operator<<(std::ostream & os, const Matrix &A)
 	{
 	
 		for (int j = 0; j <A.column; j++) {
-			if (j == A.column - 1) os << std::setw(5)<<A.matrix[i][j];
+			if (j == A.column - 1) os << std::left << std::setw(10) << std::fixed << std::setprecision(6) << A.matrix[i][j];
 			else os << std::left<< std::setw(10) << std::fixed << std::setprecision(6) << A.matrix[i][j] << " , ";
 		}
 		os <<"\r\n";

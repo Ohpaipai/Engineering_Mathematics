@@ -20,8 +20,8 @@ int main() {
 	vv.push_back(v4);
 	
 	std::cout << leastSquare(vv) << std::endl;*/
-	int aq =50 ;
-	int ap =50;
+	int aq =3 ;
+	int ap =2;
 	std::fstream file1;
 	file1.open("v1.txt", std::ios::in);
 	std::fstream file2;
@@ -63,13 +63,14 @@ int main() {
 	//std::cout << ma;
 	//std::cout << ma;
 	std::cout << ma.leastSquare(mb);
+	//std::cout << ma.Inverse();
 
 
 
 
 
 	//std::map<double, re> ans = ma.powerMethod();
-	std::map<double, re>::iterator it;
+	//std::map<double, re>::iterator it;
 	/*for (it=ans.begin();it!=ans.end();it++)
 	{
 		std::cout << it->first;
