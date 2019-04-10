@@ -20,7 +20,7 @@ int main() {
 	vv.push_back(v4);
 	
 	std::cout << leastSquare(vv) << std::endl;*/
-	int aq =2 ;
+	int aq =3 ;
 	
 	std::fstream file1;
 	file1.open("v1.txt", std::ios::in);
@@ -57,7 +57,7 @@ int main() {
 	}
 	//std::cout << ma;
 	//std::cout << ma;
-	std::map<double, re> ans = ma.eigenvalueAndeigenvectorUnder3();
+	std::map<double, re> ans = ma.powerMethod();
 	std::map<double, re>::iterator it;
 	for (it=ans.begin();it!=ans.end();it++)
 	{

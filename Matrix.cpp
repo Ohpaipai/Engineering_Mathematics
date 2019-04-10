@@ -1757,25 +1757,63 @@ std::map<double, re> Matrix::powerMethod()
 		//std::cout << tefm << t;
 		Matrix X = t*tefm;
 		Matrix X2 = t*X;
+		//std::cout << X2 << "////////////////////\n";
 		while (!(X2.juge(X)))
 		{
 			//std::cout << "dasdasd\n" << X;
 			X = X2;
 			X2 = t*X2;
-	
+			for (int i = 0; i < X2.column; i++)
+			{
+				double as = X2.getnuminMatrix(0, i);
+
+				for (int j = 0; j < X2.row; j++)
+				{
+					double _num = X2.getnuminMatrix(j, i) / as;
+					//std::cout << "qw" <<_num << std::endl;
+					X2.replaceNuminMatrix(j, i, _num);
+
+				}
+			}
+			//std::cout << X2<<"////////////////////\n";
 		}
 		//std::cout <<"dasdasd\n"<< X2;
+		//for (int i = 0; i < X2.column; i++)
+		//{
+		//	double as= X2.getnuminMatrix(0, i);
+		//	
+		//	for (int j = 0; j < X2.row; j++)
+		//	{
+		//		double _num =X2.getnuminMatrix(j, i) / as;
+		//		//std::cout << "qw" <<_num << std::endl;
+		//		X2.replaceNuminMatrix(j, i, _num);
+		//		
+		//	}
+		//}
+		//std::cout <<"dasdasd\n"<< X2;
+		re first;
+		Matrix tem(*this);
+		first.up = false;
+		VectorSpace anss;
+		for (int i = 0; i < X2.row; i++)
+		{
+			for (int j = 0; j <= 0; j++)
+			{
+				anss.addNumInSpace(X2.matrix[i][j]);
+			}
+		}
+		first.B = anss;
 		Matrix p = X2.Transpose();
 		Matrix pp = (t*X2);
 		Matrix l = pp.Transpose();
 		Matrix ans1 = l * X2;
 		Matrix ans2 =p*X2;
 		double ans = ans1.getnuminMatrix(0,0)/ans2.getnuminMatrix(0,0);
-		Matrix tem(*this);
-		Matrix a;
+		
+		/*Matrix a;
 		a = tem.eigenMatrix(ans);
-		VectorSpace vec(row);
-		re first = a.linear_system(vec);
+		VectorSpace vec(row);*/
+		
 		std::map<double, re>an;
 		std::map<double, re>::iterator it;
 		it = an.find(ans);
@@ -1926,7 +1964,7 @@ Matrix Matrix::Guass()
 				for (int x = C; x < tem.column; x++)
 				{
 					tem.matrix[y2reduce][x] -= tem.matrix[R][x] * mother;
-					if (std::abs(tem.matrix[y2reduce][x]) <= 1e-6)
+					if (std::abs(tem.matrix[y2reduce][x]) <= 11e-6)
 					{
 						tem.matrix[y2reduce][x] = 0;
 					}
@@ -1973,15 +2011,20 @@ bool Matrix::juge(Matrix b)
 		}
 	}
 	bool rrr = true;
-//	std::cout <<"tem\n" <<tem;
-//	std::cout << "tem2\n" << tem2;
+	/*std::cout <<"tem\n" <<tem;
+	std::cout <<"tem2\n" << tem2;*/
 	Matrix ans = tem - tem2;
 	
-		if (std::abs(ans.getnuminMatrix(row-1, 0))>0.000001)
+	for (int i = 0; i < column; i++)
+	{
+		if (std::abs(ans.getnuminMatrix(row - 1, i)) > 1e-6)
 		{
-			rrr=false;
-			
+			rrr = false;
+			break;
+
 		}
+	}
+		
 	
 	return rrr;
 }
