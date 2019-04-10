@@ -63,7 +63,7 @@ public:
 	std::map<double, re> powerMethod();
 	Matrix Guass();
 	double matrixToDouble();
-	
+	Matrix leastSquare(Matrix a);
 	//least square
 private:
 	bool juge(Matrix b);
@@ -78,5 +78,5 @@ private:
 
 bool Linear_independent(std::vector<VectorSpace> _vec);
 bool Linear_independent(int howmany,VectorSpace *_vec);
-std::string leastSquare(std::vector<VectorSpace> _vec);
-std::string leastSquare(int howmany, VectorSpace *_vec);
+//std::string leastSquare(std::vector<VectorSpace> _vec);
+//std::string leastSquare(int howmany, VectorSpace *_vec);

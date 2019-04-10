@@ -20,8 +20,8 @@ int main() {
 	vv.push_back(v4);
 	
 	std::cout << leastSquare(vv) << std::endl;*/
-	int aq =3 ;
-	
+	int aq =50 ;
+	int ap =50;
 	std::fstream file1;
 	file1.open("v1.txt", std::ios::in);
 	std::fstream file2;
@@ -43,11 +43,16 @@ int main() {
 	//std::cout <<ans;
 	std::fstream file3;
 	file3.open("m1.txt", std::ios::in);
-	
-	Matrix ma(aq, aq);
+	std::fstream file4;
+	file4.open("m2.txt", std::ios::in);
+	Matrix ma(aq, ap);
+	Matrix mb(aq, 1);
 	for (int i = 0; i < aq; i++)
 	{
-		for (int j = 0 ; j < aq; j++)
+		double o;
+		file4 >> o;
+		mb.replaceNuminMatrix(i, 0, o);
+		for (int j = 0 ; j < ap; j++)
 		{
 			double l;
 			file3 >> l;
@@ -57,13 +62,19 @@ int main() {
 	}
 	//std::cout << ma;
 	//std::cout << ma;
-	std::map<double, re> ans = ma.powerMethod();
+	std::cout << ma.leastSquare(mb);
+
+
+
+
+
+	//std::map<double, re> ans = ma.powerMethod();
 	std::map<double, re>::iterator it;
-	for (it=ans.begin();it!=ans.end();it++)
+	/*for (it=ans.begin();it!=ans.end();it++)
 	{
 		std::cout << it->first;
 		std::cout << it->second.B;
-	}
+	}*/
 	//std::cout << ma.Rank() << std::endl;
 	//file4 << ma.Rank();
 	//ma = ma.Guass();

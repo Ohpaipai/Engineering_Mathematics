@@ -417,11 +417,12 @@ Matrix Matrix::operator/(const double & _Scalar)
 }
 Matrix Matrix::operator=(const Matrix & _matrix)
 {
-	name = _matrix.name;
-	row = _matrix.row;
-	column = _matrix.column;
-	matrix = _matrix.matrix;
-	return *this;
+	Matrix ans;
+	ans.name = _matrix.name;
+	ans.row = _matrix.row;
+	ans.column = _matrix.column;
+	ans.matrix = _matrix.matrix;
+	return ans;
 }
 Matrix Matrix::operator^(const double & _Scalar)
 {
@@ -501,6 +502,7 @@ double Matrix::determinants()
 			int sign = 0;//看變號
 			int i = 0, j = 0, k = 0;
 
+#pragma region 註解
 			for (i = 0; i < tem.column - 1; i++) {
 				Max_column = i;
 				Max_row = tem.matrix[i][i];
@@ -536,7 +538,65 @@ double Matrix::determinants()
 				//cout << tem << endl;
 				//cout<<"next"<<endl;
 			}
-			//cout << tem << endl;
+#pragma endregion
+			//int R = 0;
+			//int C = 0;
+			////file4 << "first" << R << "  " << C << "\n" << tem << "///////////////////////////////////////\n";
+			//while (R < tem.row&&C < tem.column)
+			//{
+			//	/*	if (R == 2 && C == 2) {
+			//			std::cout << "Dasd" << std::endl;
+			//			std::cout << "Dsadasdasdsadsad\n";
+			//			std::cout << tem.matrix[2][2] << std::endl;
+			//		}*/
+
+			//	if (std::abs(tem.matrix[R][C]) == 0 /*|| std::abs(tem.matrix[R][C])<=0.000001*/)// pivot不為0
+			//	{
+
+			//		bool all0 = true;
+			//		//if (R + 1 == tem.row) break;
+			//		for (int i = R + 1; i < tem.row; i++)
+			//		{
+			//			if (tem.matrix[i][C] != 0)
+			//			{
+			//				for (int j = 0; j < tem.column; j++)
+			//				{
+			//					double c = tem.matrix[i][j];
+			//					tem.matrix[i][j] = tem.matrix[R][j];
+			//					tem.matrix[R][j] = c;
+			//				}
+			//				sign++;
+			//				all0 = false;
+			//				//file4 << "change" << R << "  " << C << "\n" << tem << "///////////////////////////////////////\n";
+			//				break;
+			//			}
+			//		}
+			//		if (all0 == true)
+			//		{
+			//			C++;
+			//		}
+			//	}
+			//	else {
+
+			//		for (int y2reduce = R + 1; y2reduce < tem.row; y2reduce++)
+			//		{
+			//			double mother = tem.matrix[y2reduce][C] / tem.matrix[R][C];
+			//			for (int x = C; x < tem.column; x++)
+			//			{
+			//				tem.matrix[y2reduce][x] -= tem.matrix[R][x] * mother;
+			//				if (std::abs(tem.matrix[y2reduce][x]) <= 11e-6)
+			//				{
+			//					tem.matrix[y2reduce][x] = 0;
+			//				}
+			//			}
+			//		}
+			//		//file4 << R << "   " << C << "\n" << tem << "///////////////////////////////////////\n";
+			//		R++;
+			//		C++;
+
+			//	}
+
+			//}			//cout << tem << endl;
 			double ans = 1;
 
 			for (i = 0; i < this->column; i++)
@@ -605,9 +665,10 @@ Matrix Matrix::adjoint()
 			}
 
 		}
-		//std::cout << ans;
-		ans = ans.Transpose();
-		return ans;
+		//std::cout <<"ddd\n"<< ans;
+		Matrix re = ans.Transpose();
+		//std::cout << re;
+		return 	ans;
 	}
 	catch (const char* str) {
 		std::cerr << "錯誤: " << str << std::endl;
@@ -624,20 +685,20 @@ Matrix Matrix::Inverse()
 		else if(this->determinants()==0)
 			throw "matrix無可逆矩陣";
 		Matrix ans(*this);
-		//std::cout << ans;
-		ans = ans.adjoint();
-		//std::cout << ans;
+		//std::cout <<"inverse 初始\n" <<ans;
+		Matrix anss = ans.adjoint();
+		//std::cout <<"我的adj\n" <<ans;
 		double denomainater = this->determinants();
-		if (denomainater == 0) return ans;
+		if (denomainater == 0) return anss;
 		else {
 			for (int i = 0; i < row; i++)
 			{
 				for (int j = 0; j < column; j++)
 				{
-					ans.matrix[i][j] /= denomainater;
+					anss.matrix[i][j] /= denomainater;
 				}
 			}
-			return ans;
+			return anss;
 		}
 	}
 	catch (const char* str) {
@@ -705,7 +766,7 @@ re Matrix::linear_system(VectorSpace _vec)
 		double *a = new double[tem.row];
 		for (int i = 0; i < tem.row; i++)
 		{
-			a[i] = 0;
+			a[i] = _vec.getNumInSpace(i);
 		}
 		tem.addColumn(a, tem.row);
 		tem = tem.Guass();
@@ -812,7 +873,7 @@ re Matrix::linear_system(VectorSpace _vec)
 		for (int i = 0; i < row; i++)
 		{
 			//cout << tem.matrix[i][tem.column - 1] << endl;
-			temvec.changeNumInSpace(tem.matrix[i][tem.column - 1]*-1,i);
+			temvec.changeNumInSpace(tem.matrix[i][tem.column - 1],i);
 			tem.matrix[i].pop_back();
 		}
 		tem.column -= 1;
@@ -1833,92 +1894,95 @@ Matrix Matrix::Guass()
 	Matrix tem(*this);
 	std::fstream file4;
 	file4.open("ans.txt", std::ios::out);
+#pragma region 註解
 	//int nowColumn = 0;//現在column
-	//int whererow = 0;//現在row
-	//double mult = 0;
-	//file4 << "處使" << nowColumn << "\n" << tem << "///////////////////////////////////////\n";
-	//for (int _row = 0; _row < tem.row; _row++)
-	//{
-	//	
-	//	//std::cout << _row << "\n" << tem;
-	//	//cout << _row << "   " << endl << tem;
-	//	if (tem.matrix[whererow][nowColumn] != 0) //判斷每次做高斯的第一個是否為0
-	//	{
-	//		//std::cout << tem.matrix[_row][nowColumn] << std::endl;
-	//		//std::cout << nowColumn << "&" << _row << std::endl;
-	//		for (int _row2 = whererow+1; _row2 < tem.row; _row2++)
-	//		{
-	//		
-	//			if (_row2 !=whererow)
-	//			{
-	//				mult = (tem.matrix[_row2][nowColumn] / tem.matrix[whererow][nowColumn]);
-	//				//std::cout << mult << "  " << std::endl;
-	//				for (int i = nowColumn; i < tem.column; i++)
-	//				{
-	//					tem.matrix[_row2][i] -= mult * tem.matrix[whererow][i];
-	//				/*	if (tem.matrix[_row2][i] <=1e-14|| tem.matrix[_row2][i] == -0.00)
-	//					{
-	//						tem.matrix[_row2][i] = 0;
-	//					}*/
+//int whererow = 0;//現在row
+//double mult = 0;
+//file4 << "處使" << nowColumn << "\n" << tem << "///////////////////////////////////////\n";
+//for (int _row = 0; _row < tem.row; _row++)
+//{
+//	
+//	//std::cout << _row << "\n" << tem;
+//	//cout << _row << "   " << endl << tem;
+//	if (tem.matrix[whererow][nowColumn] != 0) //判斷每次做高斯的第一個是否為0
+//	{
+//		//std::cout << tem.matrix[_row][nowColumn] << std::endl;
+//		//std::cout << nowColumn << "&" << _row << std::endl;
+//		for (int _row2 = whererow+1; _row2 < tem.row; _row2++)
+//		{
+//		
+//			if (_row2 !=whererow)
+//			{
+//				mult = (tem.matrix[_row2][nowColumn] / tem.matrix[whererow][nowColumn]);
+//				//std::cout << mult << "  " << std::endl;
+//				for (int i = nowColumn; i < tem.column; i++)
+//				{
+//					tem.matrix[_row2][i] -= mult * tem.matrix[whererow][i];
+//				/*	if (tem.matrix[_row2][i] <=1e-14|| tem.matrix[_row2][i] == -0.00)
+//					{
+//						tem.matrix[_row2][i] = 0;
+//					}*/
 
-	//				}
-	//				//std::cout << mult << "  " << std::endl ;
-	//			}
+//				}
+//				//std::cout << mult << "  " << std::endl ;
+//			}
 
-	//		}
-	//		file4 << _row << nowColumn << "\n" << tem << "///////////////////////////////////////\n";
+//		}
+//		file4 << _row << nowColumn << "\n" << tem << "///////////////////////////////////////\n";
 
-	//		nowColumn++;
-	//		whererow++;
-	//	}
-	//	else
-	//	{
-	//		//std::cout << "hhh\n";
-	//		if (_row == tem.row - 1) break;
-	//		bool allzero = true;
-	//		bool istriangle = false;
-	//		//std::cout << tem.matrix[_row][nowColumn] << std::endl;
-	//		for (int y = _row + 1; y < tem.row; y++)
-	//		{
-	//			if (y == tem.row - 1) {
-	//				if (tem.matrix[y][_row] == 0)
-	//				{
-	//					istriangle = true;
-	//				}
-	//			}
-	//			if (tem.matrix[y][nowColumn] != 0) { //row->nowcolumn?
-	//				/*std::cout << tem.matrix[y][_row] << std::endl;*/
-	//				for (int i = 0; i < tem.column; i++)
-	//				{
-	//					double change = tem.matrix[y][i];
-	//					tem.matrix[y][i] = tem.matrix[_row][i];
-	//					tem.matrix[_row][i] = change;
-	//				}
-	//				/*std::vector<double>change = tem.matrix[y];
-	//				
-	//				tem.matrix[y] = tem.matrix[_row];
-	//				tem.matrix[_row] = change;*/
-	//				allzero = false;
-	//				file4 << "change"<<_row<<"  " << nowColumn << "\n" << tem << "///////////////////////////////////////\n";
-	//				//std::cout << "caheck"<<" "<<nowColumn<<" "<<_row<<"\n";
-	//				_row--;
-	//				break;
+//		nowColumn++;
+//		whererow++;
+//	}
+//	else
+//	{
+//		//std::cout << "hhh\n";
+//		if (_row == tem.row - 1) break;
+//		bool allzero = true;
+//		bool istriangle = false;
+//		//std::cout << tem.matrix[_row][nowColumn] << std::endl;
+//		for (int y = _row + 1; y < tem.row; y++)
+//		{
+//			if (y == tem.row - 1) {
+//				if (tem.matrix[y][_row] == 0)
+//				{
+//					istriangle = true;
+//				}
+//			}
+//			if (tem.matrix[y][nowColumn] != 0) { //row->nowcolumn?
+//				/*std::cout << tem.matrix[y][_row] << std::endl;*/
+//				for (int i = 0; i < tem.column; i++)
+//				{
+//					double change = tem.matrix[y][i];
+//					tem.matrix[y][i] = tem.matrix[_row][i];
+//					tem.matrix[_row][i] = change;
+//				}
+//				/*std::vector<double>change = tem.matrix[y];
+//				
+//				tem.matrix[y] = tem.matrix[_row];
+//				tem.matrix[_row] = change;*/
+//				allzero = false;
+//				file4 << "change"<<_row<<"  " << nowColumn << "\n" << tem << "///////////////////////////////////////\n";
+//				//std::cout << "caheck"<<" "<<nowColumn<<" "<<_row<<"\n";
+//				_row--;
+//				break;
 
-	//			}
-	//		}
-	//		if (allzero) {
-	//			if (istriangle == false)
-	//			{
-	//				//std::cout << "hhh\n";
-	//				_row--;
-	//				nowColumn++;
-	//			}
-	//		}
-	//	}
-	//	//std::cout << "asdasd\n";
+//			}
+//		}
+//		if (allzero) {
+//			if (istriangle == false)
+//			{
+//				//std::cout << "hhh\n";
+//				_row--;
+//				nowColumn++;
+//			}
+//		}
+//	}
+//	//std::cout << "asdasd\n";
 
-	//}
-	//std::cout << "over\n";
+//}
+//std::cout << "over\n";  
+#pragma endregion
+
 
 	int R = 0;
 	int C = 0;
@@ -1991,6 +2055,28 @@ double Matrix::matrixToDouble()
 	return matrix[0][0];
 }
 
+Matrix Matrix::leastSquare(Matrix a)
+{
+	Matrix tem(*this);
+	Matrix temT = tem.Transpose();
+	//std::cout << temT;
+	Matrix T = temT*tem;
+	//std::cout << T.column<<" "<<T.row<<"\n";
+	//std::cout << T;
+	Matrix tinverse = T.Inverse();
+	std::cout << "dasdasd\n";
+	//T = T.Inverse();
+	//std::cout << tinverse ;
+	//std::cout << T;
+	//std::cout << temT;
+	 //Matrix X = tinverse * temT;
+	//std::cout << X;
+	//std::cout << a;
+	 Matrix ans;
+	 //ans = X * a;
+	return ans;
+}
+
 bool Matrix::juge(Matrix b)
 {
 	Matrix tem(*this);
@@ -2037,9 +2123,9 @@ std::ostream & operator<<(std::ostream & os, const Matrix &A)
 			if (j == A.column - 1) os << std::setw(5)<<A.matrix[i][j];
 			else os << std::left<< std::setw(10) << std::fixed << std::setprecision(6) << A.matrix[i][j] << " , ";
 		}
-		os << std::endl;
+		os <<"\r\n";
 	}
-	os << std::endl;
+	os << "\r\n";
 	return os;
 }
 
@@ -2243,102 +2329,102 @@ bool Linear_independent(int howmany,VectorSpace *_vec)
 	return ans;
 }
 
-std::string leastSquare(std::vector<VectorSpace> _vec)
-{
-	//X  = (A^(T)A)^(-1)A^(T)Y 
-	Matrix tem("tem", _vec.size(), _vec[0].getvectorsize(), _vec);
-	//std::cout << tem;
-	
-	Matrix fx(tem.getRow(),1);
-
-	//std::cout << fx;
-	for (int i = 0; i < tem.getRow(); i++)
-	{
-		fx.replaceNuminMatrix(i,0, tem.getnuminMatrix(i,tem.getcolumn()-1));
-		tem.replaceNuminMatrix(i, tem.getcolumn() - 1,1);
-	}
-	//std::cout << tem;
-	//std::cout << fx;
-	Matrix temT = tem.Transpose();
-	
-	Matrix T = temT * tem;
-	//std::cout << T;
-	T = T.Inverse();
-	//std::cout << T;
-	//std::cout << temT;
-	Matrix X = T * temT;
-	//std::cout << X;
-	//std::cout << fx;
-	X = X * fx;
-	//std::cout << X;
-	std::string ans = "y = ";
-	for (int i = 0; i <X.getRow(); i++)
-	{
-		std::stringstream ss;
-		std::string record;
-		ss<< X.getnuminMatrix(i, 0);
-		ss >> record;
-		ss.clear();
-		ss.str("");
-		ans += record;
-		if (i + 1 != X.getRow())
-		{
-			ss << (i + 1);
-			ss >> record;
-			ans += 'x';
-			ans += record;
-			ans += " + ";
-		}
-	}
-	return ans;
-}
-
-std::string leastSquare(int howmany, VectorSpace * _vec)
-{
-	//X  = (A^(T)A)^(-1)A^(T)Y 
-	Matrix tem(howmany,_vec[0].getvectorsize() , *_vec);
-	//std::cout << tem;
-
-	Matrix fx(tem.getRow(), 1);
-
-	//std::cout << fx;
-	for (int i = 0; i < tem.getRow(); i++)
-	{
-		fx.replaceNuminMatrix(i, 0, tem.getnuminMatrix(i, tem.getcolumn() - 1));
-		tem.replaceNuminMatrix(i, tem.getcolumn() - 1, 1);
-	}
-	//std::cout << tem;
-	//std::cout << fx;
-	Matrix temT = tem.Transpose();
-
-	Matrix T = temT * tem;
-	//std::cout << T;
-	T = T.Inverse();
-	//std::cout << T;
-	//std::cout << temT;
-	Matrix X = T * temT;
-	//std::cout << X;
-	//std::cout << fx;
-	X = X * fx;
-	//std::cout << X;
-	std::string ans = "y = ";
-	for (int i = 0; i < X.getRow(); i++)
-	{
-		std::stringstream ss;
-		std::string record;
-		ss << X.getnuminMatrix(i, 0);
-		ss >> record;
-		ss.clear();
-		ss.str("");
-		ans += record;
-		if (i + 1 != X.getRow())
-		{
-			ss << (i + 1);
-			ss >> record;
-			ans += 'x';
-			ans += record;
-			ans += " + ";
-		}
-	}
-	return ans;
-}
+//std::string leastSquare(std::vector<VectorSpace> _vec)
+//{
+//	//X  = (A^(T)A)^(-1)A^(T)Y 
+//	Matrix tem("tem", _vec.size(), _vec[0].getvectorsize(), _vec);
+//	//std::cout << tem;
+//	
+//	Matrix fx(tem.getRow(),1);
+//
+//	//std::cout << fx;
+//	for (int i = 0; i < tem.getRow(); i++)
+//	{
+//		fx.replaceNuminMatrix(i,0, tem.getnuminMatrix(i,tem.getcolumn()-1));
+//		tem.replaceNuminMatrix(i, tem.getcolumn() - 1,1);
+//	}
+//	//std::cout << tem;
+//	//std::cout << fx;
+//	Matrix temT = tem.Transpose();
+//	
+//	Matrix T = temT * tem;
+//	//std::cout << T;
+//	T = T.Inverse();
+//	//std::cout << T;
+//	//std::cout << temT;
+//	Matrix X = T * temT;
+//	//std::cout << X;
+//	//std::cout << fx;
+//	X = X * fx;
+//	//std::cout << X;
+//	std::string ans = "y = ";
+//	for (int i = 0; i <X.getRow(); i++)
+//	{
+//		std::stringstream ss;
+//		std::string record;
+//		ss<< X.getnuminMatrix(i, 0);
+//		ss >> record;
+//		ss.clear();
+//		ss.str("");
+//		ans += record;
+//		if (i + 1 != X.getRow())
+//		{
+//			ss << (i + 1);
+//			ss >> record;
+//			ans += 'x';
+//			ans += record;
+//			ans += " + ";
+//		}
+//	}
+//	return ans;
+//}
+//
+//std::string leastSquare(int howmany, VectorSpace * _vec)
+//{
+//	//X  = (A^(T)A)^(-1)A^(T)Y 
+//	Matrix tem(howmany,_vec[0].getvectorsize() , *_vec);
+//	//std::cout << tem;
+//
+//	Matrix fx(tem.getRow(), 1);
+//
+//	//std::cout << fx;
+//	for (int i = 0; i < tem.getRow(); i++)
+//	{
+//		fx.replaceNuminMatrix(i, 0, tem.getnuminMatrix(i, tem.getcolumn() - 1));
+//		tem.replaceNuminMatrix(i, tem.getcolumn() - 1, 1);
+//	}
+//	//std::cout << tem;
+//	//std::cout << fx;
+//	Matrix temT = tem.Transpose();
+//
+//	Matrix T = temT * tem;
+//	//std::cout << T;
+//	T = T.Inverse();
+//	//std::cout << T;
+//	//std::cout << temT;
+//	Matrix X = T * temT;
+//	//std::cout << X;
+//	//std::cout << fx;
+//	X = X * fx;
+//	//std::cout << X;
+//	std::string ans = "y = ";
+//	for (int i = 0; i < X.getRow(); i++)
+//	{
+//		std::stringstream ss;
+//		std::string record;
+//		ss << X.getnuminMatrix(i, 0);
+//		ss >> record;
+//		ss.clear();
+//		ss.str("");
+//		ans += record;
+//		if (i + 1 != X.getRow())
+//		{
+//			ss << (i + 1);
+//			ss >> record;
+//			ans += 'x';
+//			ans += record;
+//			ans += " + ";
+//		}
+//	}
+//	return ans;
+//}
